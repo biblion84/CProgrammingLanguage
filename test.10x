@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<N10X>
+	<Workspace>
+		<FileTypes>All Code Files</FileTypes>
+		<ExcludeFilters></ExcludeFilters>
+		<SyncFiles>true</SyncFiles>
+		<Recursive>true</Recursive>
+		<IsVirtual>false</IsVirtual>
+		<IsFolder>false</IsFolder>
+		<BuildCommand>build.bat</BuildCommand>
+		<RebuildCommand></RebuildCommand>
+		<BuildFileCommand></BuildFileCommand>
+		<CleanCommand></CleanCommand>
+		<RunCommand>$(WorkspaceDirectory)/main.exe</RunCommand>
+		<DebugCommand></DebugCommand>
+		<ExePathCommand></ExePathCommand>
+		<Configurations>
+			<Configuration>Debug</Configuration>
+			<Configuration>Release</Configuration>
+		</Configurations>
+		<Platforms>
+			<Platform>x64</Platform>
+			<Platform>Win32</Platform>
+		</Platforms>
+		<AdditionalIncludePaths></AdditionalIncludePaths>
+		<ConfigProperties>
+			<Configuration>
+				<Name>Debug:x64</Name>
+				<Defines></Defines>
+			</Configuration>
+		</ConfigProperties>
+		<Children></Children>
+	</Workspace>
+</N10X>
