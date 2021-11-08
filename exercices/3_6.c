@@ -11,7 +11,7 @@ void itoa(int n, char s[], char minWidth)
 	if (negative) {
 		n = -n; // Do not handle INT_MIN but who care ? 
 	}
-
+	
 	do { /* generate digits in reverse order */
 		char digit = (char)(n % base);
 		char digitInBase = '\0';
@@ -24,14 +24,14 @@ void itoa(int n, char s[], char minWidth)
 		}
 		s[i++] = digitInBase;
 	} while ((n /= base) > 0); /* delete it */
-
+	
 	if (negative)
 		s[i++] = '-';
-
+	
 	for (i; i < minWidth; i++) {
 		s[i] = ' ';
 	}
-
+	
 	s[i] = '\0';
 	reverse(s);
 }
