@@ -50,6 +50,22 @@ void reverse(char s[]){
 	s[len] = '\n';
 }
 
+int power(int a, int exp) {
+	int result = 1;
+	for (int i = 0; i < exp; i++) {
+		result *= a;
+	}
+	return result;
+}
+
+double dpower(double a, int exp) {
+	double result = 1;
+	for (int i = 0; i < exp; i++) {
+		result *= a;
+	}
+	return result;
+}
+
 
 
 #define MAIN_H
