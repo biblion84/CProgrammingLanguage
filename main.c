@@ -1,47 +1,27 @@
 #include <stdio.h>
+#define MAXLINES 5000 /* max #lines to be sorted */
 
-static int daytabSize = 13;
-static char **daytab;
-/* day_of_year: set day of year from month & day */
-int day_of_year(int year, int month, int day)
+char *lineptr[MAXLINES]; /* pointers to text lines */
+int readlines(char *lineptr[], int nlines);
+void writelines(char *lineptr[], int nlines);
+void qsort(void *lineptr[], int left, int right,
+	int (*comp)(void *, void *));
+int numcmp(char *, char *);
+/* sort input lines */
+main(int argc, char *argv[])
 {
-	if (month > 12 || day > 31) {
-		return -1;
+	int nlines; /* number of input lines read */
+	int numeric = 0; /* 1 if numeric sort */
+	if (argc > 1 && strcmp(argv[1], "-n") == 0)
+		numeric = 1;
+	if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
+		qsort((void**) lineptr, 0, nlines-1,
+			(int (*)(void*,void*))(numeric ? numcmp : strcmp));
+		writelines(lineptr, nlines);
+		107
+			return 0;
+	} else {
+		printf("input too big to sort\n");
+		return 1;
 	}
-	int i, leap;
-	leap = year%4 == 0 && year%100 != 0 || year%400 == 0;
-	for (i = 1; i < month; i++)
-		day += *(*(daytab + leap) + i);
-	return day;
-}
-
-/* month_day: set month, day from day of year */
-void month_day(int year, int yearday, int *pmonth, int *pday)
-{
-	if (yearday < 0) {
-		*pmonth = -1;
-		*pday = -1;
-	}
-	int i, leap;
-	leap = year%4 == 0 && year%100 != 0 || year%400 == 0;
-	for (i = 1; yearday > daytab[leap][i]; i++)
-		yearday -= *(*(daytab + leap) + i);
-	*pmonth = i;
-	*pday = yearday;
-}
-
-int main ()
-{
-	char *pointerStore[2];
-	daytab = pointerStore;
-	char notLeap[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-	char leap[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-	*daytab = notLeap;
-	*(daytab + 1) = notLeap;
-	int month, day;
-
-	month_day(1914, 123, &month, &day);
-	printf("Month\t: %2d\nDay\t\t: %2d", month, day);
-	putchar('\n');
-	
 }
