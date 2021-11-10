@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int isAlpha(int c) {
+int isAlphaNum(int c) {
 	return !(c == ' ' || c == '\t' || c == ' ' || c == '\n');
 }
 
