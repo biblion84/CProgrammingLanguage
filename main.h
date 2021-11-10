@@ -119,6 +119,9 @@ double atof(char s[])
 	return val;
 }
 
+int atoI(char s[]) {
+	return (int)atof(s);
+}
 
 
 

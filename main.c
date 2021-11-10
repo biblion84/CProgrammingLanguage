@@ -16,13 +16,44 @@ int getword(char *, int);
 /* word frequency count */
 int isAlphaNum(int);
 
-int main()
+void getline(char *to, char *from) {
+	int i = 0;
+	for (i = 0; from[i] != '\0'; i++) {
+		to[i] = from[i];
+	}
+	to[i] = '\0';
+}
+
+int startWithMultiple(char *s, char c, int multiple) {
+	for (int i = 0; i < multiple && s[i] != '\0'; i++) {
+		if (s[i] != c) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int main(int argc, char *argv[])
 {
+	int similitude = 6;
+	for (int i = 1; i < argc; i++) {
+		char *arg = *(argv + i);
+		if (*arg == '-' && *(arg + 1) == 'n') {
+			char v[MAXWORD];
+			getline(v, arg + 2); // replace
+			similitude = atoI(v);
+		}
+	}
+	if (similitude == 0) {
+		printf("-n only accept integer values\n");
+		return 1;
+	}
+
 	struct tnode *root;
 	char word[MAXWORD];
 	root = NULL;
 	while (getword(word, MAXWORD) != EOF){
-		if (isAlphaNum(word[0])) {
+		if (isAlphaNum(word[0]) && startWithMultiple(word, word[0], similitude)) {
 			root = addtree(root, word);
 		}
 	}
@@ -52,6 +83,7 @@ struct tnode *addtree(struct tnode *p, char *w)
 }
 
 /* treeprint: in-order print of tree p */
+// In orded means asc sorted
 void treeprint(struct tnode *p)
 {
 	if (p != NULL) {
