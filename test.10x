@@ -27,6 +27,7 @@
 			<Configuration>
 				<Name>Debug:x64</Name>
 				<Defines></Defines>
+				<ForceIncludes></ForceIncludes>
 			</Configuration>
 		</ConfigProperties>
 		<Children></Children>
