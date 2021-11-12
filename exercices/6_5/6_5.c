@@ -17,7 +17,7 @@ unsigned hash(char *s)
 	unsigned hashval;
 	for (hashval = 0; *s != '\0'; s++)
 		hashval = *s + 31 * hashval;
-		return hashval % HASHSIZE;
+	return hashval % HASHSIZE;
 #endif
 }
 
@@ -31,7 +31,6 @@ struct nlist *lookup(char *s)
 			return np; /* found */
 		}
 	}
-
 	return NULL; /* not found */
 }
 
@@ -46,12 +45,31 @@ char *strdup(char *s) /* make a duplicate of s */
 	return p;
 }
 
+void removeHash(char *s) {
+	struct nlist *np;
+	struct nlist *nprevious = 0;
+	for (np = hashtab[hash(s)]; np != NULL; np = np->next)
+	{
+		if (strCmp(s, np->name) == 0) // Found
+		{
+			if (nprevious) {
+				nprevious->next = np->next;
+			} else {
+				hashtab[hash(s)] = np->next;
+			}
+			free(np);
+			return;
+		}
+		nprevious = np;
+	}
+}
+
 /* install: put (name, defn) in hashtab */
 struct nlist *install(char *name, char *defn)
 {
 	struct nlist *np;
 	unsigned hashval;
-
+	
 	if ((np = lookup(name)) == NULL) { /* not found */
 		np = (struct nlist *) malloc(sizeof(*np));
 		if (np == NULL || (np->name = strdup(name)) == NULL)
@@ -66,16 +84,28 @@ struct nlist *install(char *name, char *defn)
 	return np;
 }
 
-
+void printLookup(char *name){
+	struct nlist *p = lookup(name);
+	if (p) {
+		printf("%s\n", p->defn);
+	} else {
+		printf("NOT FOUND\n");
+	}
+}
 
 int main(){
 	install("ATA", "OTO");
 	install("ITI", "UTU");
-	struct nlist *p = lookup("ATA");
-	printf("%s\n", p->defn);
 	
-	p = lookup("ITI");
-	printf("%s\n", p->defn);
+	printLookup("ATA");
+	printLookup("ITI");
+	
+	removeHash("ATA");
+	printLookup("ITI");
+	printLookup("ATA");
+	
+	
+	
 	printf("Ok\n");
 	return 0;
 }

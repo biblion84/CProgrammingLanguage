@@ -1,0 +1,24 @@
+There are two ways to create comments in Batch Script; one is via the Rem command. Any text which follows the Rem statement will be treated as comments and will not be executed. Following is the general syntax of this statement.
+Syntax
+
+Rem Remarks
+
+where ‘Remarks’ is the comments which needs to be added.
+
+The following example shows a simple way the Rem command can be used.
+Example
+
+@echo off 
+Rem This program just displays Hello World 
+set message=Hello World 
+echo %message%
+
+Output
+
+The above command produces the following output. You will notice that the line with the Rem statement will not be executed.
+
+Hello World
+
+Comments Using the :: Statement
+
+The other way to create comments in Batch Script is via the :: command. Any text which follows the :: statement will be treated as comments and will not be executed. Following is the general syntax of this statement.
