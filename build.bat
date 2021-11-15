@@ -20,7 +20,8 @@ SET "Path=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\
 
 
 set CommonCompilerFlags=-MTd -Gm- -nologo -GR- -EHa- -Oi -Od -WX -W4 ^
- -wd4201 -wd4505 -wd4100 -wd4189 -wd4028 ^
+ -wd4201 -wd4505 -wd4100 -wd4189 -wd4028 -wd4146 ^
+	-wd4996 ^
 	-FC -Zi -GL -Gw
 set CommonLinkerFlags=-incremental:no -opt:ref
 
