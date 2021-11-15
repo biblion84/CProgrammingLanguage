@@ -20,3 +20,10 @@ Column 1
 7 . If a number appears more than once, we print it in stderr, the rest of the program does not change.
 		If an input integer is less than 0 it's skipped
 		If an input is not numeric we won't know because we read 1 int per 1 int as a binary file
+
+Column 2
+
+2.1
+A .	See ThreeProblemsA. 
+		For the solution with only a few hundred bytes of main memory, we need to use lseek or equivalent
+		In order to use the file as a (slow) array. As shown in K&R p.155

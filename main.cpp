@@ -1,115 +1,48 @@
 #include <stdio.h>
-#include <stdlib.h>
-//#include <ctype.h>
-#include <string.h>
-#define LINES 3410000
-#define MAX_LINE 10000000
 
-unsigned int seed;
 
-/* The state word must be initialized to non-zero */
-unsigned int random()
-{
-	/* Algorithm "xor" from p. 4 of Marsaglia, "Xorshift RNGs" */
-	unsigned int x = seed;
-	x ^= x << 13;
-	x ^= x >> 17;
-	x ^= x << 5;
-	return seed = x;
+void rotate(char *vec, int i){
+	char cpvec[9];
+	int secondaryIndex = 0;
+	
+	for (int j = 0; j < 8; ++j){
+		int index = i + j;
+		
+		if (index >= 8) {
+			index = secondaryIndex++;
+		}
+		
+		cpvec[j] = vec[index];
+	}
+	cpvec[8] = '\0';
+	
+	for (int x = 0; x < 8; ++x){
+		vec[x] = cpvec[x];
+	}
 }
 
 
-void createFile(){
-	srand(42);
-	int *file = (int*)malloc(LINES * sizeof(int)); // Can't allocate an array this big on the stack
-	int fileIndex = 0;
-	for (int i = 0; i < LINES; i++){
-		if ((rand() % 10) > 3){
-			file[fileIndex++] = i;
+void rotateInPlace(char *vec, int i){
+	int len = 8;
+	int secIndex = 0;
+	
+	for (int j = 0; j < len; ++j){
+		int index = j + i;
+		if (index >= len){
+			index = secIndex++;
 		}
+		// Maybe can't do that ? Are we overwriting the cursor ahead of us ? 
+		char temp = vec[j];
+		vec[j] = vec[secIndex];
+		vec[secIndex] = temp;
 	}
-	/* Column 1 exercice 4
-		Generating k integers less than n without duplicates.
-		* Step 1 : Generate integer with an incrementing index from 0 to n
-		* Step 2 : shuffle
-		* Step 3 : ??
-		* Step 4 : Profit
-		*/
-	seed = 22;
-	 //shuffle the data around
-	for (int i = 0; i < (fileIndex / 2); i++) {
-		int swapIndex = (random() % (fileIndex / 2)) + fileIndex/2;
-		if (swapIndex != i) {
-			int temp = file[i];
-			file[i] = file[swapIndex];
-			file[swapIndex] = temp;
-		}
-	}
-	file[30] = 42;
-	file[3000] = 42;
-	file[2500] = -42;
-	FILE *f = fopen("C:/cbuild/shuffled", "wb");
-	fwrite(file, sizeof(int), fileIndex, f);
-	printf("Before\n");
-	//
-	char *test = "hello";
-	fwrite(test, sizeof(char), 4, f);
-	printf("Wrote\n");
-	fclose(f);
-	free(file);
 }
 
 
 int main(int argc, char *argv[]) {
-	createFile();
-	
-	unsigned char *bitfield = (unsigned char*)malloc((MAX_LINE / 8) * sizeof(unsigned char)); // One bit per value
-	{
-		FILE *f = fopen("C:/cbuild/shuffled", "rb");
-		for (int i = 0; i < MAX_LINE / 8; i++) {
-			bitfield[i] = 0;
-		}
-		int x = 0;
-		while (fread(&x, sizeof(int), 1, f) && !feof(f)) {
-			if (x < 0) continue;
-			int index = x / 8;
-			int rest = x % 8;
-			unsigned char bitcompare = (1 << rest);
-			if (bitfield[index] & bitcompare) {
-				// Question 7 : Handle numbers that appears more than once,
-				// They're ignored and the user is notified
-				fprintf(stderr, "%d appears more than once !\n", x);
-			}
-			bitfield[index] = (bitfield[index] | bitcompare);
-		}
-		//printf("%d\n", x);
-		if (ferror(f)) {
-			printf("error\n");
-		}
-	}
-	{
-		FILE *output = fopen("C:/cbuild/sorted", "wb");
-		for (int i = 0; i < MAX_LINE; ++i) {
-			int index = i / 8;
-			int rest = i % 8;
-			unsigned char bitcompare = (1 << rest);
-			if (bitfield[index] & bitcompare) {
-				fwrite(&i, sizeof(int), 1, output);
-			}
-		}
-		fclose(output);
-	}
-	
-	//{
-	//	FILE *reader = fopen("C:/cbuild/output", "rb");
-	//	int readInt;
-	//	while (fread(&readInt, sizeof(int), 1, reader) && !feof(reader)) {
-	//		printf("%d\n", readInt);
-	//	}
-	//	fclose(reader);
-	//}
+	char vec[9] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '\0' };
+	int i = 3;
 
-	printf("Ok\n");
-
+	rotateInPlace(vec, i);
+	printf("%s\n", vec);
 }
-

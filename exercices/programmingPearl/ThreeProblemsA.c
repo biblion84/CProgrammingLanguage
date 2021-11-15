@@ -2,9 +2,10 @@
 #include <stdlib.h>
 //#include <ctype.h>
 #include <string.h>
-#define LINES 3410000
-#define MAX_LINE 10000000
-
+#define LINES 10100100
+#define MAX_LINE 4294967295
+#define SHUFFLED_FILE "D:/cbuild/shuffled"
+#define SORTED_FILE "D:/cbuild/sorted"
 unsigned int seed;
 
 /* The state word must be initialized to non-zero */
@@ -30,18 +31,38 @@ bool test(unsigned char *bitmap, int n) {
 	int index = n / 8;
 	int rest = n % 8;
 	unsigned char bitcompare = (1 << rest);
+	char *s = "test";
 	return bitmap[index] & bitcompare;
 }
 
 void createFile(){
 	srand(42);
+	seed = 42;
+	FILE *f = fopen(SHUFFLED_FILE, "wb");
+	
 	int *file = (int*)malloc(LINES * sizeof(int)); // Can't allocate an array this big on the stack
-	int fileIndex = 0;
-	for (int i = 0; i < LINES; i++){
-		if ((rand() % 10) > 3){
-			file[fileIndex++] = i;
+	for (int k = 0; k < 50; k++) {
+		int fileIndex = 0;
+		for (int i = 0; i < LINES; i++) {
+			if ((random() % 10) > 8){
+				file[fileIndex++] = i + (k * LINES);
+			}
 		}
+		printf("Start shuffling\n");
+		for (int i = 0; i < (fileIndex / 2); i++) {
+			int swapIndex = (random() % (fileIndex / 2)) + fileIndex/2;
+			if (swapIndex != i) {
+				int temp = file[i];
+				file[i] = file[swapIndex];
+				file[swapIndex] = temp;
+			}
+		}
+		printf("Start writing\n");
+		
+		fwrite(file, sizeof(int), fileIndex, f);
+		printf("Wrote %d integers\n", LINES);
 	}
+	free(file);
 	/* Column 1 exercice 4
 		Generating k integers less than n without duplicates.
 		* Step 1 : Generate integer with an incrementing index from 0 to n
@@ -49,46 +70,27 @@ void createFile(){
 		* Step 3 : ??
 		* Step 4 : Profit
 		*/
-	seed = 22;
-	//shuffle the data around
-	for (int i = 0; i < (fileIndex / 2); i++) {
-		int swapIndex = (random() % (fileIndex / 2)) + fileIndex/2;
-		if (swapIndex != i) {
-			int temp = file[i];
-			file[i] = file[swapIndex];
-			file[swapIndex] = temp;
-		}
-	}
-	file[30] = 42;
-	file[3000] = 42;
-	file[2500] = -42;
-	FILE *f = fopen("C:/cbuild/shuffled", "wb");
-	fwrite(file, sizeof(int), fileIndex, f);
-	printf("Before\n");
-	//
-	char *test = "hello";
-	fwrite(test, sizeof(char), 4, f);
-	printf("Wrote\n");
+	
 	fclose(f);
-	free(file);
 }
 
 
 int main(int argc, char *argv[]) {
+	//printf("%d\n", (int)sizeof(int));
 	createFile();
-	
+	printf("Start of reading file\n");
 	unsigned char *bitfield = (unsigned char*)malloc((MAX_LINE / 8) * sizeof(unsigned char)); // One bit per value
 	{
-		FILE *f = fopen("C:/cbuild/shuffled", "rb");
+		FILE *f = fopen(SHUFFLED_FILE, "rb");
 		for (int i = 0; i < MAX_LINE / 8; i++) {
 			bitfield[i] = 0;
 		}
 		int x = 0;
-		while (fread(&x, sizeof(int), 1, f) && !feof(f)) {
+		while (fread(&x, sizeof(int), 1, f)) {
 			if (x < 0) continue;
 			if (test(bitfield, x)) {
-				// Question 7 : Handle numbers that appears more than once,
-				// They're ignored and the user is notified
+				//Question 7 : Handle numbers that appears more than once,
+				//They're ignored and the user is notified
 				fprintf(stderr, "%d appears more than once !\n", x);
 			}
 			set(bitfield, x);
@@ -97,8 +99,10 @@ int main(int argc, char *argv[]) {
 			printf("error\n");
 		}
 	}
+	printf("Start of writing file\n");
+	
 	{
-		FILE *output = fopen("C:/cbuild/sorted", "wb");
+		FILE *output = fopen(SORTED_FILE, "wb");
 		for (int i = 0; i < MAX_LINE; ++i) {
 			if (test(bitfield, i)) {
 				fwrite(&i, sizeof(int), 1, output);
@@ -106,16 +110,18 @@ int main(int argc, char *argv[]) {
 		}
 		fclose(output);
 	}
+#if 0
 	
-	//{
-	//	FILE *reader = fopen("C:/cbuild/output", "rb");
-	//	int readInt;
-	//	while (fread(&readInt, sizeof(int), 1, reader) && !feof(reader)) {
-	//		printf("%d\n", readInt);
-	//	}
-	//	fclose(reader);
-	//}
+	{
+		FILE *reader = fopen(SORTED_FILE, "rb");
+		int readInt;
+		while (fread(&readInt, sizeof(int), 1, reader) && !feof(reader)) {
+			printf("%d\n", readInt);
+		}
+		fclose(reader);
+	}
 	
+#endif
 	printf("Ok\n");
 	
 }
