@@ -36,7 +36,7 @@ void createFile(){
 		* Step 4 : Profit
 		*/
 	seed = 22;
-	 //shuffle the data around
+	//shuffle the data around
 	for (int i = 0; i < (fileIndex / 2); i++) {
 		int swapIndex = (random() % (fileIndex / 2)) + fileIndex/2;
 		if (swapIndex != i) {
@@ -45,16 +45,8 @@ void createFile(){
 			file[swapIndex] = temp;
 		}
 	}
-	file[30] = 42;
-	file[3000] = 42;
-	file[2500] = -42;
-	FILE *f = fopen("C:/cbuild/shuffled", "wb");
+	FILE *f = fopen("C:/cbuild/1", "wb");
 	fwrite(file, sizeof(int), fileIndex, f);
-	printf("Before\n");
-	//
-	char *test = "hello";
-	fwrite(test, sizeof(char), 4, f);
-	printf("Wrote\n");
 	fclose(f);
 	free(file);
 }
@@ -65,30 +57,24 @@ int main(int argc, char *argv[]) {
 	
 	unsigned char *bitfield = (unsigned char*)malloc((MAX_LINE / 8) * sizeof(unsigned char)); // One bit per value
 	{
-		FILE *f = fopen("C:/cbuild/shuffled", "rb");
+		FILE *f = fopen("C:/cbuild/1", "rb");
 		for (int i = 0; i < MAX_LINE / 8; i++) {
 			bitfield[i] = 0;
 		}
 		int x = 0;
-		while (fread(&x, sizeof(int), 1, f) && !feof(f)) {
-			if (x < 0) continue;
+		while (fread(&x, sizeof(int), 1, f) && !feof(f) && x >= 0) {
 			int index = x / 8;
 			int rest = x % 8;
 			unsigned char bitcompare = (1 << rest);
-			if (bitfield[index] & bitcompare) {
-				// Question 7 : Handle numbers that appears more than once,
-				// They're ignored and the user is notified
-				fprintf(stderr, "%d appears more than once !\n", x);
-			}
 			bitfield[index] = (bitfield[index] | bitcompare);
 		}
-		//printf("%d\n", x);
+		printf("%d\n", x);
 		if (ferror(f)) {
 			printf("error\n");
 		}
 	}
 	{
-		FILE *output = fopen("C:/cbuild/sorted", "wb");
+		FILE *output = fopen("C:/cbuild/output", "wb");
 		for (int i = 0; i < MAX_LINE; ++i) {
 			int index = i / 8;
 			int rest = i % 8;
@@ -100,16 +86,16 @@ int main(int argc, char *argv[]) {
 		fclose(output);
 	}
 	
-	//{
-	//	FILE *reader = fopen("C:/cbuild/output", "rb");
-	//	int readInt;
-	//	while (fread(&readInt, sizeof(int), 1, reader) && !feof(reader)) {
-	//		printf("%d\n", readInt);
-	//	}
-	//	fclose(reader);
-	//}
-
+	{
+		FILE *reader = fopen("C:/cbuild/output", "rb");
+		int readInt;
+		while (fread(&readInt, sizeof(int), 1, reader) && !feof(reader)) {
+			printf("%d\n", readInt);
+		}
+		fclose(reader);
+	}
+	
 	printf("Ok\n");
-
+	
 }
 

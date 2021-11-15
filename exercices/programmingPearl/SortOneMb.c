@@ -18,6 +18,8 @@ void createFile(){
 	}
 	FILE *f = fopen("C:/cbuild/1", "wb");
 	fwrite(file, sizeof(int), LINES, f);
+	char test[10] = "9989080";
+	fwrite("Test", sizeof(test)
 	fclose(f);
 }
 

@@ -1,0 +1,22 @@
+Column 1
+
+1 . ?
+2 . Like I did in SortOneMb.c
+3 . Bitmap sort is O(n) when other sorts are a lot slower.
+		We have a lot less cache misses than other sorts due to our contiguous bitmap
+4	. To generate k unique integer less than n in a random order, I iterate with i from 0 to n and
+		integrate i to my array if a random number is greater than (k/n) and 
+		I stop as soon as k integer are generated.
+		If I miss some I do a much slower for loop that'll generate a random number and see
+		if it's present in the array
+		When all this is done I shuffle the array.
+		See: SortOneMbClean.c
+5	.	If only half the storage is available I run the program two time, one time for [0, 5M) and then for [5M, 10M)
+		The run time is thus 2 time greater at least.
+6 .	If each integers can appears at most 10 times, we can run the program 10 times with 10 bit per number in our
+		bitmap. Or we can run the program 4 times with instead of a bitmap a 4bit object array. Which show a
+		number between [0, 16) that can store the number of time the number appears.
+		This scale indefinitly, the program will only be run more times at each increment of the max possible value.
+7 . If a number appears more than once, we print it in stderr, the rest of the program does not change.
+		If an input integer is less than 0 it's skipped
+		If an input is not numeric we won't know because we read 1 int per 1 int as a binary file
