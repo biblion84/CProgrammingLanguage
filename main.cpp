@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 
 void rotate(char *vec, int i){
@@ -25,17 +26,28 @@ void rotate(char *vec, int i){
 void rotateInPlace(char *vec, int i){
 	int len = 8;
 	int secIndex = 0;
+	char *tempVec = (char *)malloc(i * sizeof(int));
+	for (int j = 0; j < i; ++j){
+		tempVec[j] = vec[j];
+	}
 	
 	for (int j = 0; j < len; ++j){
 		int index = j + i;
 		if (index >= len){
-			index = secIndex++;
+			break;
 		}
 		// Maybe can't do that ? Are we overwriting the cursor ahead of us ? 
+		// Yes we are.
 		char temp = vec[j];
 		vec[j] = vec[secIndex];
 		vec[secIndex] = temp;
 	}
+
+	for (int j = 0; j < i; ++j){
+		int index = (len - i) + j;
+		vec[index] = tempVec[j];
+	}
+	free(tempVec);
 }
 
 
