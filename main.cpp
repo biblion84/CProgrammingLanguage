@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 
-void rotate(char *vec, int i){
+void rotate(char *vec, int i){ // using len(vec) * sizeof(int) extra bytes
 	char cpvec[9];
 	int secondaryIndex = 0;
 	
@@ -23,9 +23,8 @@ void rotate(char *vec, int i){
 }
 
 
-void rotateInPlace(char *vec, int i){
+void rotateInPlace(char *vec, int i){ // Only using i * sizeof(int) extra bytes
 	int len = 8;
-	int secIndex = 0;
 	char *tempVec = (char *)malloc(i * sizeof(int));
 	for (int j = 0; j < i; ++j){
 		tempVec[j] = vec[j];
@@ -36,11 +35,10 @@ void rotateInPlace(char *vec, int i){
 		if (index >= len){
 			break;
 		}
-		// Maybe can't do that ? Are we overwriting the cursor ahead of us ? 
-		// Yes we are.
+
 		char temp = vec[j];
-		vec[j] = vec[secIndex];
-		vec[secIndex] = temp;
+		vec[j] = vec[index];
+		vec[index] = temp;
 	}
 
 	for (int j = 0; j < i; ++j){
