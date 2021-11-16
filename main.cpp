@@ -1,32 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void reverse(char *vec, int start, int end){
-	int s, e;
-	for (s = start, e = end; s < e; ++s, --e){
-		char temp = vec[s];
-		vec[s] = vec[e];
-		vec[e] = temp;
+#define MB (1024 * 1024)
+#define MAX_WORDS 400000
+
+int len(char *s){
+	int i;
+	for (i = 0; s[i] != '\0'; ++i);
+	return i;
+}
+
+
+struct canonicalString {
+	char *original;
+	char *canonical;
+};
+
+// bubble sort (fast enough)
+void canonalize(char *s){
+	bool cont = true;
+	while(cont) {
+		cont = false;
+		for (int i = 0; s[i + 1] != '\0'; ++i){
+			if (s[i] > s[i + 1]) {
+				char temp = s[i];
+				s[i] = s[i + 1];
+				s[i + 1] = temp;
+				cont = true;
+			}
+		}
 	}
 }
+	
 
-// To rotate a vector i position we do 3 reversal [0, i) [i, end) [0, end)
-void rotateSolution(char *vec, int i, int len) {
-	// Reverse [0, i)
-	// Reverse [i, len)
-	// Reverse [0, len)
-	// That rotate the vector i place
-	reverse(vec, 0, i - 1);
-	reverse(vec, i, len - 1);
-	reverse(vec, 0, len - 1);
+int main(int argc, char *argv[]) {
+	FILE *f = fopen("words_alpha.txt", "r");
 
-}
+	printf("Start Allocating\n");
+	char *memory = (char *)malloc(10 * MB);
+	char *memoryIndex = memory;
+
+	canonicalString *words = (canonicalString *)malloc(MAX_WORDS * sizeof(canonicalString));
+
+	int wordIndex = 0;
+	printf("End Allocating\n");
 	
-	
-	int main(int argc, char *argv[]) {
-	char vec[9] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '\0' };
-	int i = 3;
-	
-	rotateSolution(vec, i, 8);
-	printf("%s\n", vec);
+	printf("Start Loading\n");
+	char word[30];
+	while (fgets(word, 30, f)) {
+		int l = len(word);
+		words[wordIndex].original = memoryIndex;
+		for (int i = 0; i < l + 1; i++){ // + 1 to get the last \0 in
+			*memoryIndex++ = word[i];
+		}
+		canonalize(word);
+		words[wordIndex++].canonical = memoryIndex;
+		for (int i = 0; i < l + 1; i++){ // + 1 to get the last \0 in
+			*memoryIndex++ = word[i];
+		}
+	}
+	printf("%lld\n", memoryIndex - memory);
+	printf("Stop Loading\n");
 }
