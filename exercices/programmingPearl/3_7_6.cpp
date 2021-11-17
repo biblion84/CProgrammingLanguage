@@ -12,7 +12,7 @@ inline int ctoi(char s){
 int main(){
 	FILE *f = fopen("template.txt", "r");
 	char records[][10] = { "Lucas", "Bg", "25" };
-
+	
 	char line[200];
 	char output[230];
 	while (fgets(line, 200, f)){
@@ -31,5 +31,5 @@ int main(){
 		*outputIndex = '\0';
 		printf("%s\n", output);
 	}
-
+	
 }
