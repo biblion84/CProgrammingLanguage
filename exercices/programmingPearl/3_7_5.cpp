@@ -28,16 +28,16 @@ int main(){
 	for (int i = 0; i < ArrayCount(hyphens); i++){
 		printf("%s\n", hyphens[i]);
 	}
-
+	
 	char word[] = "ethnic";
 	int l = len(word);
-
+	
 	char* h = 0;
 	char *match = 0;
 	for (int i = 0; i < ArrayCount(hyphens) && match == 0; i++){
 		int lhyphen = lenWithoutHyphen(hyphens[i]);
 		int startingIndex = l - lhyphen;
-
+		
 		if (startingIndex < 0) continue;
 		
 		bool found = true;
@@ -52,12 +52,12 @@ int main(){
 			match = hyphens[i];
 		}
 	}
-
+	
 	if (match) {
 		printf("match found : %s\n", match);
 	} else {
 		printf("match not found\n");
 	}
-
+	
 	return 0;
 }
