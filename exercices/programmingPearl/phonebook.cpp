@@ -30,7 +30,7 @@ void reverse(char s[]){
 
 char * getNumber(char *s){ // its overflowing.. And we need string to better compare
 	char *result = memoryIndex;
-
+	
 	reverse(s);
 	
 	for (int i = 0; s[i] != '\0'; ++i) {
@@ -59,19 +59,19 @@ char * getNumber(char *s){ // its overflowing.. And we need string to better com
 		}
 	}
 	reverse(s);
-
+	
 	*memoryIndex++ = '\0';
 	reverse(result);
-
+	
 	return result;
 }
 
 
 int partition(nameStruct *a, int low, int high){
 	nameStruct pivot = a[low];
-
+	
 	int i = low - 1;
-
+	
 	for (int j = low; j <= high; j++){
 		if (strcmp(a[j].number, pivot.number) <= 0){
 			i++;
@@ -80,15 +80,15 @@ int partition(nameStruct *a, int low, int high){
 			a[i] = temp;
 		}
 	}
-
+	
 	return i;
-
+	
 }
 
 void quicksort(nameStruct *a, int low, int high){
 	if (low >= 0 && high >= 0 && low < high){
 		int p = partition(a, low, high);
-
+		
 		quicksort(a, low, p - 1);
 		quicksort(a, p + 1, high);
 	}
@@ -110,7 +110,7 @@ int compareSubstring(char *a, char *b, int endB){
 int buttonToNames(char *input, nameStruct *names, int lenNames, nameStruct **start){
 	int startIndex = 0;
 	int lenInput = len(input);
-
+	
 	for (startIndex = 0; startIndex < lenNames; ++startIndex){
 		if (compareSubstring(input, names[startIndex].number, lenInput) == 0){
 			break;
@@ -124,25 +124,25 @@ int buttonToNames(char *input, nameStruct *names, int lenNames, nameStruct **sta
 		}
 		found++;
 	}
-
+	
 	*start = names + startIndex;
 	return found;
 	
 }
 
 int main() {
-
+	
 	memory = (char *)malloc(200 * KB);
 	memoryIndex = memory;
 	nameStruct *names = (nameStruct *)malloc(sizeof(nameStruct) * 2200);
 	int namesIndex = 0;
-
+	
 	FILE *f = fopen("names.txt", "r");
 	char name[100];
 	while (fgets(name, 100, f)){
 		int l = len(name);
 		name[l - 1] = '\0'; // we remove the last \n
-
+		
 		bool notAlpha = false;
 		for (int i = 0; name[i] != '\0'; ++i) {
 			if (!isalpha(name[i])){
@@ -154,17 +154,17 @@ int main() {
 			continue;
 		}
 		
-
+		
 		names[namesIndex].number = getNumber(name);
 		names[namesIndex++].name = memoryIndex;
-
+		
 		for (int i = 0; name[i] != '\0'; ++i){
 			*memoryIndex++ = name[i];
 		}
 		*memoryIndex++ = '\0';
 	}
-
-
+	
+	
 	printf("Start of sorting\n");
 	quicksort(names, 0, namesIndex - 1);
 	printf("End of sorting\n");
@@ -175,16 +175,16 @@ int main() {
 	//		for (j = 0; strcmp(names[i].number, names[i + j].number) == 0; j++){
 	//			printf("\t%s\n", names[i + j].name);
 	//		}
-//
+	//
 	//	}
 	//}
-
+	
 	nameStruct *start = 0;
 	int matches = buttonToNames("5822", names, namesIndex, &start);
 	printf("Matches found :\n");
 	
 	for (int i = 0; i < matches; i++){
-			printf("%s (%s)\n", start[i].name, start[i].number);
+		printf("%s (%s)\n", start[i].name, start[i].number);
 	}
 	
 	
