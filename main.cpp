@@ -28,7 +28,7 @@ int maxSumNlogN(int *a, int l, int h){
 
 	int sum, lsum, rsum;
 	// find left max
-	lsum = sum = 0;
+	lsum = sum = 0; // [pivot, l]
 	for (int i = pivot; i >= l; i--){
 		sum += a[i];
 		lsum = MAX(lsum, sum);
@@ -44,11 +44,25 @@ int maxSumNlogN(int *a, int l, int h){
 	return MAX(rsum + lsum, MAX(maxSumNlogN(a, l, pivot),maxSumNlogN(a, pivot + 1, h))) ;
 }
 
+
+int maxSumLinear(int *a, int len) {
+	int maxsofar = 0;
+	int maxendinghere = 0;
+
+	for (int i = 0; i < len; i++){
+		maxendinghere = MAX(maxendinghere + a[i], 0);
+		maxsofar = MAX(maxsofar, maxendinghere);
+	}
+
+	return maxendinghere;
+}
+
 int main(){
-	int a[] = { -95, 95, 3, -8, -13, 25, 33, 55 };
+	int a[] = { -95, 95, 3, -8, -13, 25, 33, 55, -500, 30 };
 
 	printf("%d\n", maxSumQuadratic(a, ArrayCount(a)));
 	printf("%d\n", maxSumNlogN(a, 0, ArrayCount(a) - 1));
+	printf("%d\n", maxSumLinear(a, ArrayCount(a)));
 	printf("OK\n");
 	return 0;
 }
