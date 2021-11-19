@@ -1,35 +1,54 @@
 #include <stdio.h>
-#define ArrayCount(Array) (sizeof(Array) / sizeof((Array)[0]))
+#define ArrayCount(Array) ((int)(sizeof(Array) / sizeof((Array)[0])))
+#define MAX(A, B) (A > B ? A : B)
 
 
-inline int ctoi(char s){
-	if (s >= '0' && s <= '9'){
-		return s - '0';
+int maxSumQuadratic(int *a, int len){ // can't use array count on a pointer. thus need len
+	int maxSum = 0;
+	for (int i = 0; i < len; ++i){
+		int sum = 0;
+		for (int j = i; j < len; ++j){
+			sum += a[j];
+			if (sum > maxSum){
+				maxSum = sum;
+			}
+		}
 	}
-	return 0;
+	return maxSum;
+}
+
+int maxSumNlogN(int *a, int l, int h){
+	if (l > h){
+		return 0;
+	} else if (l == h) {
+		return MAX(a[l], 0);
+	}
+
+	int pivot = (l + h) / 2;
+
+	int sum, lsum, rsum;
+	// find left max
+	lsum = sum = 0;
+	for (int i = pivot; i >= l; i--){
+		sum += a[i];
+		lsum = MAX(lsum, sum);
+	}
+
+	// find right max
+	rsum = sum = 0;
+	for (int i = pivot + 1; i <= h; i++){ // [pivot, h]
+		sum += a[i];
+		rsum = MAX(rsum, sum);
+	}
+
+	return MAX(rsum + lsum, MAX(maxSumNlogN(a, l, pivot),maxSumNlogN(a, pivot + 1, h))) ;
 }
 
 int main(){
-	FILE *f = fopen("template.txt", "r");
-	char records[][10] = { "Lucas", "Bg", "25" };
+	int a[] = { -95, 95, 3, -8, -13, 25, 33, 55 };
 
-	char line[200];
-	char output[230];
-	while (fgets(line, 200, f)){
-		char *outputIndex = output;
-		for (int i = 0; line[i] != '\0'; i++){
-			if (line[i] == '$' && ctoi(line[i+1])){
-				char *toAdd = records[ctoi(line[i + 1]) - 1];
-				for (int j = 0; toAdd[j] != '\0'; j++){
-					*(outputIndex++) = toAdd[j];
-				}
-				i++;
-			} else {
-				*(outputIndex++) = line[i];
-			}
-		}
-		*outputIndex = '\0';
-		printf("%s\n", output);
-	}
-
+	printf("%d\n", maxSumQuadratic(a, ArrayCount(a)));
+	printf("%d\n", maxSumNlogN(a, 0, ArrayCount(a) - 1));
+	printf("OK\n");
+	return 0;
 }
