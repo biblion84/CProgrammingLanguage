@@ -2,11 +2,9 @@
 #define ArrayCount(Array) ((int)(sizeof(Array) / sizeof((Array)[0])))
 #define MAX(A, B) (A > B ? A : B)
 
-#define INT_MIN -2147483648
-	
 
-int maxSumQuadraticNegative(int *a, int len){ // can't use array count on a pointer. thus need len
-	int maxSum = a[0];
+int maxSumQuadratic(int *a, int len){ // can't use array count on a pointer. thus need len
+	int maxSum = 0;
 	for (int i = 0; i < len; ++i){
 		int sum = 0;
 		for (int j = i; j < len; ++j){
@@ -19,52 +17,36 @@ int maxSumQuadraticNegative(int *a, int len){ // can't use array count on a poin
 	return maxSum;
 }
 
-int maxSumNlogNNegative(int *a, int l, int h){
+int maxSumNlogN(int *a, int l, int h){
 	if (l > h){
-		return INT_MIN;
+		return 0;
 	} else if (l == h) {
-		return a[l];
+		return MAX(a[l], 0);
 	}
-
+	
 	int pivot = (l + h) / 2;
-
+	
 	int sum, lsum, rsum;
 	// find left max
-	sum = 0; // [pivot, l]
-	lsum = INT_MIN;
+	lsum = sum = 0; // [pivot, l]
 	for (int i = pivot; i >= l; i--){
 		sum += a[i];
 		lsum = MAX(lsum, sum);
 	}
-
+	
 	// find right max
-	sum = 0;
-	rsum = INT_MIN;
+	rsum = sum = 0;
 	for (int i = pivot + 1; i <= h; i++){ // [pivot, h]
 		sum += a[i];
 		rsum = MAX(rsum, sum);
 	}
-
-	return MAX(rsum + lsum, MAX(maxSumNlogNNegative(a, l, pivot),maxSumNlogNNegative(a, pivot + 1, h))) ;
+	
+	return MAX(rsum + lsum, MAX(maxSumNlogN(a, l, pivot),maxSumNlogN(a, pivot + 1, h))) ;
 }
 
 
 int maxSumLinear(int *a, int len) {
 	int maxsofar = 0;
-	int maxendinghere = 0;
-
-	for (int i = 0; i < len; i++){
-		maxendinghere = MAX(maxendinghere + a[i], 0);
-		maxsofar = MAX(maxsofar, maxendinghere);
-	}
-
-	return maxsofar;
-}
-
-
-
-int maxSumLinearNegative(int *a, int len) {
-	int maxsofar = a[0];
 	int maxendinghere = 0;
 	
 	for (int i = 0; i < len; i++){
@@ -77,10 +59,10 @@ int maxSumLinearNegative(int *a, int len) {
 
 
 int main(){
-	int a[] = {-33, -12, -11, -3, -100 };
-
-	printf("%d\n", maxSumQuadraticNegative(a, ArrayCount(a)));
-	printf("%d\n", maxSumNlogNNegative(a, 0, ArrayCount(a) - 1));
+	int a[] = { 95, -95, 3, -8, -13, 25, 33, 55, -500, 30 };
+	
+	printf("%d\n", maxSumQuadratic(a, ArrayCount(a)));
+	printf("%d\n", maxSumNlogN(a, 0, ArrayCount(a) - 1));
 	printf("%d\n", maxSumLinear(a, ArrayCount(a)));
 	printf("OK\n");
 	return 0;
