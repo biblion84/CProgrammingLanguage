@@ -4,7 +4,7 @@
 #define MIN(A, B) ((B) > (A) ? (B) : (A))
 
 #define INT_MIN -2147483648
-	
+
 unsigned int seed;
 /* The state word must be initialized to non-zero */
 unsigned int random()
@@ -52,9 +52,9 @@ int closestToZeroLog(int *a, int l, int h){
 	} else if (l == h) {
 		return a[l];
 	}
-
+	
 	int pivot = (l + h) / 2;
-
+	
 	int sum, lsum, rsum;
 	// find left max
 	sum = a[pivot]; // [pivot, l]
@@ -63,7 +63,7 @@ int closestToZeroLog(int *a, int l, int h){
 		sum += a[i];
 		lsum = closestToZero(lsum, sum);
 	}
-
+	
 	// find right max
 	sum = a[pivot + 1];
 	rsum = a[pivot + 1];
@@ -71,7 +71,7 @@ int closestToZeroLog(int *a, int l, int h){
 		sum += a[i];
 		rsum = closestToZero(rsum, sum);
 	}
-
+	
 	return closestToZero(rsum + lsum, closestToZero(closestToZeroLog(a, l, pivot),closestToZeroLog(a, pivot + 1, h))) ;
 }
 
@@ -113,14 +113,14 @@ int closestToZeroLinear(int *a, int len) {
 int main(){
 	//scaffolding();
 	int a[] = {-33, -12, -11, -3, -100, 102 };
-//
-
+	//
+	
 	// the quadratics algorithm is working, the other are not
 	printf("%d\n", closestToZeroQuadratic(a, ArrayCount(a)));
 	printf("%d\n", closestToZeroLog(a, 0, ArrayCount(a) -1));
 	printf("%d\n", closestToZeroLinear(a, ArrayCount(a)));
-//	printf("%d\n", maxSumNlogNNegative(a, 0, ArrayCount(a) - 1));
-//	printf("%d\n", maxSumLinearNegative(a, ArrayCount(a)));
+	//	printf("%d\n", maxSumNlogNNegative(a, 0, ArrayCount(a) - 1));
+	//	printf("%d\n", maxSumLinearNegative(a, ArrayCount(a)));
 	printf("OK\n");
 	return 0;
 }
