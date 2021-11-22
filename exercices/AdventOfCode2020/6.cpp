@@ -8,21 +8,21 @@ int main() {
 	
 	char responses[3000] = {};
 	char *s[3000];
-
+	
 	int sIndex = 0;
 	for (int i = 0; i < 3000; i++){
 		s[i] = (char *)malloc(300);
 	}
-
+	
 	for (int i = 0; i < 3000; i++) {
 		for (int j = 0; j < 300; j++) {
 			s[i][j] = '\0';
 		}
 	}
-
+	
 	int ssIndex = 0;
 	char temp[300];
-
+	
 	while (fgets(temp, 300, f)) {
 		if (temp[0] == '\n'){
 			sIndex++;
@@ -34,7 +34,7 @@ int main() {
 			}
 		}
 	}
-
+	
 	long long total = 0;
 	for (int i = 0; i < sIndex + 1; i++){
 		int result = 0;
@@ -54,11 +54,11 @@ int main() {
 		total += result;
 		printf("%s : %d\n", s[i], result);
 	}
-
-
+	
+	
 	for (int i = 0; i < 10; i++){
 		printf("X %d\n", responses[i]);
 	}
-
+	
 	printf("TOTAL :%lld\n", total);
 }
