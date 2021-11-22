@@ -19,21 +19,21 @@ char *getKeyValue(char *s, keyValue *kv) {
 		kv->k[i] = s[i];
 	}
 	kv->k[i] = '\0';
-
+	
 	i++;
-
+	
 	int j = 0;
 	for (j = 0; s[i + j] != ' ' && s[i + j] != '\0'; j++) {
 		kv->v[j] = s[i + j];
 	}
 	kv->v[j] = '\0';
-
+	
 	return s + i + j + 1; // skip next space too
 }
 
 int main() {
 	FILE *f = fopen("input.txt", "r");
-
+	
 	char *s[300];
 	int sIndex = 0;
 	for (int i = 0; i < 300; i++) {
@@ -44,7 +44,7 @@ int main() {
 			s[i][j] = '\0';
 		}
 	}
-
+	
 	char temp[300];
 	int ssIndex = 0;
 	while (fgets(temp, 300, f)) {
@@ -61,17 +61,17 @@ int main() {
 		}
 	}
 	sIndex++;
-
+	
 	int valid = 0;
-
+	
 	char *tofind[] = { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid" };
 	//int targetBitmap = 0;
 	//for (int j = 0; j < 7; j++){
 	//	targetBitmap |= (1 << j);
 	//}
-
+	
 	char *eyeColor[] = { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
-
+	
 	for (int index = 0; index < sIndex; index++) {
 		char *ss = s[index];
 		int correct = 0;
@@ -79,11 +79,11 @@ int main() {
 			keyValue kv = {};
 			ss = getKeyValue(ss, &kv);
 			//printf("%s %s\n", kv.k, kv.v);
-
+			
 			if (kv.k[0] == '\0') {
 				break;
 			}
-
+			
 			if (strcmp(kv.k, "byr") == 0) {
 				int year = atoi(kv.v);
 				if (year >= 1920 && year <= 2002) {
@@ -149,7 +149,7 @@ int main() {
 			valid++;
 		}
 	}
-
+	
 	printf("Ok : %d\n", valid);
 }
 

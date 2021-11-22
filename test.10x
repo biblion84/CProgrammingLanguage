@@ -2,7 +2,7 @@
 <N10X>
 	<Workspace>
 		<FileTypes>All Code Files</FileTypes>
-		<ExcludeFilters></ExcludeFilters>
+		<ExcludeFilters>numbers.txt</ExcludeFilters>
 		<SyncFiles>true</SyncFiles>
 		<Recursive>true</Recursive>
 		<IsVirtual>false</IsVirtual>

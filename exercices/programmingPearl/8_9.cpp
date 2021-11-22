@@ -30,6 +30,14 @@ int maxSumQuadraticNegative(int *a, int len){ // can't use array count on a poin
 	return maxSum;
 }
 
+inline int max(int a, b){
+	if (a > b){
+		return a;
+	} else {
+		return b;
+	}
+}
+
 int maxSumNlogNNegative(int *a, int l, int h){
 	if (l > h){
 		return INT_MIN;
@@ -45,7 +53,7 @@ int maxSumNlogNNegative(int *a, int l, int h){
 	lsum = INT_MIN;
 	for (int i = pivot; i >= l; i--){
 		sum += a[i];
-		lsum = MAX(lsum, sum);
+		lsum = max(lsum, sum);
 	}
 	
 	// find right max
@@ -53,10 +61,10 @@ int maxSumNlogNNegative(int *a, int l, int h){
 	rsum = INT_MIN;
 	for (int i = pivot + 1; i <= h; i++){ // [pivot, h]
 		sum += a[i];
-		rsum = MAX(rsum, sum);
+		rsum = max(rsum, sum);
 	}
 	
-	return MAX(rsum + lsum, MAX(maxSumNlogNNegative(a, l, pivot),maxSumNlogNNegative(a, pivot + 1, h))) ;
+	return max(rsum + lsum, max(maxSumNlogNNegative(a, l, pivot),maxSumNlogNNegative(a, pivot + 1, h))) ;
 }
 
 
