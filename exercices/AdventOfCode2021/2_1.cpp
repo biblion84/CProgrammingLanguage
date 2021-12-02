@@ -32,7 +32,7 @@ char * getWord(char *word, char *line) {
 int main() {
 	
 	FILE *f = fopen("input.txt", "r");
-
+	
 	char direction[30];
 	char value[30];
 	int intValue;
@@ -40,22 +40,21 @@ int main() {
 	
 	int hor = 0;
 	int ver = 0;
-	int aim = 0;
 	while (fgets(line, 300, f)) {
 		char *nextWord = getWord(direction, line);
 		getWord(value, nextWord);
 		intValue = atoi(value);
-
+		
 		if (strcmp(direction, "forward") == 0) {
 			hor += intValue;
-			ver += intValue * aim;
 		} else if (strcmp(direction, "up") == 0) {
-			aim -= intValue;
-			
+			ver -= intValue;
 		} else if (strcmp(direction, "down") == 0) {
-			aim += intValue;
+			ver += intValue;
 		}
 	}
-
+	
 	printf("hor %d, ver %d, result %d\n", hor, ver, ver * hor);
+	
+	
 }

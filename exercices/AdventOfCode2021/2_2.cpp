@@ -37,7 +37,7 @@ int main() {
 	char value[30];
 	int intValue;
 	char line[300];
-	
+
 	int hor = 0;
 	int ver = 0;
 	int aim = 0;
