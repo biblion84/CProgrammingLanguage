@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INPUT_SIZE 12
-#define FILE_SIZE 1000
+#define INPUT_SIZE 5
+#define FILE_SIZE 12
 
 
 
@@ -19,6 +19,15 @@ int charToInt(char *input) {
 		if (input[i] == '1') {
 			result = (result | (1 << ((INPUT_SIZE - 1) - i)));
 		}
+	}
+	return result;
+}
+
+int count(char **input) {
+	int result = 0;
+	for (int i = 0; i < FILE_SIZE; i++){
+		if (input[i])
+			result++;
 	}
 	return result;
 }
@@ -69,11 +78,13 @@ int main(){
 	}
 
 	char oxygenResult[INPUT_SIZE + 1];
-	for (int i = 0; i < INPUT_SIZE; i++) {
+	for (int i = 0; i < INPUT_SIZE ; i++) {
 		int zero = 0;
 		int one = 0;
+		printf("for the %d number\n", i);
 		for (int j = 0; j < FILE_SIZE; j++) {
 			if (!oxygen[j]) continue;
+			printf("%s \n", oxygen[j]);
 
 			if (oxygen[j][i] == '1'){
 				one++;
@@ -81,43 +92,24 @@ int main(){
 				zero++;
 			}
 		}
+		printf("\nXX 0:%d 1:%dXX\n", zero, one);
+		char winner = one < zero ? '0' : '1';
 		for (int j = 0; j < FILE_SIZE; j++) {
 			if (!oxygen[j]) continue;
 
-			if (oxygen[j][i] == '1' && one < zero){
+			if (oxygen[j][i] != winner){
 				oxygen[j] = 0;
 			}
 		}
-		oxygenResult[i] = one < zero ? '0' : '1';
+		oxygenResult[i] = winner;
+		
 	}
 
-	char scrubberResult[INPUT_SIZE + 1];
-	for (int i = 0; i < INPUT_SIZE; i++) {
-		int zero = 0;
-		int one = 0;
-		for (int j = 0; j < FILE_SIZE; j++) {
-			if (!scrubber[j]) continue;
-			
-			if (scrubber[j][i] == '1'){
-				one++;
-			} else {
-				zero++;
-			}
-		}
-		for (int j = 0; j < FILE_SIZE; j++) {
-			if (!scrubber[j]) continue;
-			
-			if (scrubber[j][i] == '0' && zero < one){
-				scrubber[j] = 0;
-			}
-		}
-		scrubberResult[i] = zero < one ? '0' : '1';
-	}
 	oxygenResult[INPUT_SIZE] = '\0';
 	scrubberResult[INPUT_SIZE] = '\0';
 	printf("%s %d\n" , oxygenResult, charToInt(oxygenResult));
 	printf("%s %d\n" , scrubberResult, charToInt(scrubberResult));
-	printf("%d\n" , charToInt(oxygenResult) * charToInt(scrubberResult));
+
 	
 }
 
