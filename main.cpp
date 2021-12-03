@@ -3,17 +3,18 @@
 #include <string.h>
 
 #define INPUT_SIZE 5
+#define FILE_SIZE 12
 
 
 
 int charToInt(char *input) {
-	unsigned int result;
+	int result;
 	for (int i = 0; i < INPUT_SIZE; i++) {
 		if (input[i] == '1') {
 			result = (result | (1 << ((INPUT_SIZE - 1) - i)));
 		}
 	}
-	return (int)result;
+	return result;
 }
 
 void cp(char *s, char *t) {
@@ -24,22 +25,24 @@ void cp(char *s, char *t) {
 
 int main(){
 
-
 	FILE *f = fopen("input.txt", "r");
 	char t[300];
-	int result[INPUT_SIZE];
-	char input[1000][INPUT_SIZE + 2]; // \n
+	int totalSet[INPUT_SIZE];
+
+	char input[FILE_SIZE][INPUT_SIZE + 1]; // \n
 	int inputIndex = 0;
 	for (int i = 0; i < INPUT_SIZE; i++) {
-		result[i] = 0;
+		totalSet[i] = 0;
 	}
 	int total = 0;
 	while (fgets(t, 300, f)) {
 		total++;
-		cp(input[inputIndex++], t);
+		t[INPUT_SIZE] = '\0'; // remove \n
+		strcpy(input[inputIndex], t);
+		inputIndex++;
 		for (int i = 0; i < INPUT_SIZE; i++) {
 			if (t[i] == '1') {
-				result[i] ++;
+				totalSet[i] ++;
 			}
 		}
 	}
@@ -48,7 +51,7 @@ int main(){
 	char lsb[INPUT_SIZE + 1];
 	int mean = total / 2;
 	for (int i = 0; i < INPUT_SIZE; i++) {
-		if (result[i] > mean) {
+		if (totalSet[i] > mean) {
 			msb[i] = '1';
 			lsb[i] = '0';
 		} else {
@@ -57,63 +60,57 @@ int main(){
 		}
 	}
 
-	char found[INPUT_SIZE + 1];
-	char subString[INPUT_SIZE + 1];
-	char fileString[INPUT_SIZE + 1];
-
-	int msbNumber = 0;
-	for (int i = INPUT_SIZE; i > 0 && !msbNumber; i--){
-		cp(subString, msb);
-		subString[i] = '\0';
-		for (int j = 0; j < 1000; j++){
-			cp(fileString, input[j] );
-			fileString[i] = '\0';
-			if (strcmp(fileString, subString) == 0) {
-				int currentNumber = charToInt(input[j]);
-				printf("%d, %d\n", currentNumber, msbNumber);
-				printf("%s\n", input[j]);
-				if (currentNumber > msbNumber) {
-					msbNumber = currentNumber;
-					cp(found, input[j]);
-				}
-			}
-		}
-	}
-
-	char foundLsb[INPUT_SIZE + 1];
-	int lsbNumber = charToInt("111111111111");
-	int sentinelValue = lsbNumber;
-	for (int i = INPUT_SIZE; i > 0 && lsbNumber != sentinelValue; i--){
-		cp(subString, lsb);
-		subString[i] = '\0';
-		for (int j = 0; j < 1000; j++){
-			cp(fileString, input[j] );
-			fileString[i] = '\0';
-			if (strcmp(fileString, subString) == 0) {
-				int currentNumber = charToInt(input[j]);
-				if (currentNumber < lsbNumber) {
-					lsbNumber = currentNumber;
-					cp(foundLsb, input[j]);
-				}
-			}
-		}
-	}
-
-	//unsigned int msbV = 0;
-	//unsigned int lsbV = 0;
-	//for (int i = 0; i < INPUT_SIZE; i++) {
-	//	if (found[i] == '1') {
-	//		msbV = (msbV | (1 << ((INPUT_SIZE - 1) - i)));
-	//	}
-	//	if (foundLsb[i] == '1') {
-	//		lsbV = (lsbV | (1 << ((INPUT_SIZE - 1) - i)));
+	
+	//char found[INPUT_SIZE + 1];
+	//char subString[INPUT_SIZE + 1];
+	//char fileString[INPUT_SIZE + 1];
+	//
+	//int msbNumber = 0;
+	//for (int i = INPUT_SIZE - 1; i > 0 && !msbNumber; i--){
+	//	cp(subString, msb);
+	//	subString[i] = '\0';
+	//	for (int j = 0; j < FILE_SIZE; j++){
+	//		cp(fileString, input[j] );
+	//		fileString[i] = '\0';
+	//		printf("Compare %s and %s\n", fileString, subString);
+	//		if (strcmp(fileString, subString) == 0) {
+	//			int currentNumber = charToInt(input[j]);
+	//			printf("%d, %d\n", currentNumber, msbNumber);
+	//			printf("%s\n", input[j]);
+	//			if (currentNumber > msbNumber) {
+	//				msbNumber = currentNumber;
+	//				cp(found, input[j]);
+	//			}
+	//		}
 	//	}
 	//}
+
+	//char lsbFound[INPUT_SIZE + 1];
 	//
-
-
-	//printf("%s = %d\n",  , msbNumber);
-	//printf("lsb : %s = %d\n", foundLsb, lsbNumber);
-	//printf("result : %d\n",  lsbNumber * msbNumber);
+	//int lsbNumber = 1 << (INPUT_SIZE + 1);
+	//int sentinel = lsbNumber;
+	//for (int i = INPUT_SIZE - 1; i > 0 && lsbNumber != sentinel; i--){
+	//	cp(subString, lsb);
+	//	subString[i] = '\0';
+	//	for (int j = 0; j < FILE_SIZE; j++){
+	//		cp(fileString, input[j] );
+	//		fileString[i] = '\0';
+	//		printf("Compare %s and %s\n", fileString, subString);
+	//		if (strcmp(fileString, subString) == 0) {
+	//			int currentNumber = charToInt(input[j]);
+	//			printf("%d, %d\n", currentNumber, lsbNumber);
+	//			printf("%s\n", input[j]);
+	//			if (currentNumber < lsbNumber) {
+	//				lsbNumber = currentNumber;
+	//				cp(lsbFound, input[j]);
+	//			}
+	//		}
+	//	}
+	//}
+	
+	printf("\n\n%d\n",  charToInt("10111"));
+//
+//	printf("\n%s = %d\n", found, msbNumber);
+//	printf("\n%s = %d\n", lsbFound, lsbNumber);
 
 }
