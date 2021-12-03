@@ -2,13 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INPUT_SIZE 5
-#define FILE_SIZE 12
+#define INPUT_SIZE 12
+#define FILE_SIZE 1000
 
 
+
+
+void cp(char *s, char *t) {
+	while ((*s++ = *t++) != 0)
+		;
+}
 
 int charToInt(char *input) {
-	int result;
+	int result = 0;
 	for (int i = 0; i < INPUT_SIZE; i++) {
 		if (input[i] == '1') {
 			result = (result | (1 << ((INPUT_SIZE - 1) - i)));
@@ -17,14 +23,9 @@ int charToInt(char *input) {
 	return result;
 }
 
-void cp(char *s, char *t) {
-	while ((*s++ = *t++) != 0)
-		;
-}
-
-
 int main(){
-
+	//printf("\n\n%d\n",  charToInt("10111"));
+	
 	FILE *f = fopen("input.txt", "r");
 	char t[300];
 	int totalSet[INPUT_SIZE];
@@ -51,7 +52,7 @@ int main(){
 	char lsb[INPUT_SIZE + 1];
 	int mean = total / 2;
 	for (int i = 0; i < INPUT_SIZE; i++) {
-		if (totalSet[i] > mean) {
+		if (totalSet[i] >= mean) {
 			msb[i] = '1';
 			lsb[i] = '0';
 		} else {
@@ -60,57 +61,64 @@ int main(){
 		}
 	}
 
-	
-	//char found[INPUT_SIZE + 1];
-	//char subString[INPUT_SIZE + 1];
-	//char fileString[INPUT_SIZE + 1];
-	//
-	//int msbNumber = 0;
-	//for (int i = INPUT_SIZE - 1; i > 0 && !msbNumber; i--){
-	//	cp(subString, msb);
-	//	subString[i] = '\0';
-	//	for (int j = 0; j < FILE_SIZE; j++){
-	//		cp(fileString, input[j] );
-	//		fileString[i] = '\0';
-	//		printf("Compare %s and %s\n", fileString, subString);
-	//		if (strcmp(fileString, subString) == 0) {
-	//			int currentNumber = charToInt(input[j]);
-	//			printf("%d, %d\n", currentNumber, msbNumber);
-	//			printf("%s\n", input[j]);
-	//			if (currentNumber > msbNumber) {
-	//				msbNumber = currentNumber;
-	//				cp(found, input[j]);
-	//			}
-	//		}
-	//	}
-	//}
+	char *oxygen[FILE_SIZE];
+	char *scrubber[FILE_SIZE];
+	for (int i = 0; i < FILE_SIZE; i++){
+		oxygen[i] = input[i];
+		scrubber[i] = input[i];
+	}
 
-	//char lsbFound[INPUT_SIZE + 1];
-	//
-	//int lsbNumber = 1 << (INPUT_SIZE + 1);
-	//int sentinel = lsbNumber;
-	//for (int i = INPUT_SIZE - 1; i > 0 && lsbNumber != sentinel; i--){
-	//	cp(subString, lsb);
-	//	subString[i] = '\0';
-	//	for (int j = 0; j < FILE_SIZE; j++){
-	//		cp(fileString, input[j] );
-	//		fileString[i] = '\0';
-	//		printf("Compare %s and %s\n", fileString, subString);
-	//		if (strcmp(fileString, subString) == 0) {
-	//			int currentNumber = charToInt(input[j]);
-	//			printf("%d, %d\n", currentNumber, lsbNumber);
-	//			printf("%s\n", input[j]);
-	//			if (currentNumber < lsbNumber) {
-	//				lsbNumber = currentNumber;
-	//				cp(lsbFound, input[j]);
-	//			}
-	//		}
-	//	}
-	//}
-	
-	printf("\n\n%d\n",  charToInt("10111"));
-//
-//	printf("\n%s = %d\n", found, msbNumber);
-//	printf("\n%s = %d\n", lsbFound, lsbNumber);
+	char oxygenResult[INPUT_SIZE + 1];
+	for (int i = 0; i < INPUT_SIZE; i++) {
+		int zero = 0;
+		int one = 0;
+		for (int j = 0; j < FILE_SIZE; j++) {
+			if (!oxygen[j]) continue;
 
+			if (oxygen[j][i] == '1'){
+				one++;
+			} else {
+				zero++;
+			}
+		}
+		for (int j = 0; j < FILE_SIZE; j++) {
+			if (!oxygen[j]) continue;
+
+			if (oxygen[j][i] == '1' && one < zero){
+				oxygen[j] = 0;
+			}
+		}
+		oxygenResult[i] = one < zero ? '0' : '1';
+	}
+
+	char scrubberResult[INPUT_SIZE + 1];
+	for (int i = 0; i < INPUT_SIZE; i++) {
+		int zero = 0;
+		int one = 0;
+		for (int j = 0; j < FILE_SIZE; j++) {
+			if (!scrubber[j]) continue;
+			
+			if (scrubber[j][i] == '1'){
+				one++;
+			} else {
+				zero++;
+			}
+		}
+		for (int j = 0; j < FILE_SIZE; j++) {
+			if (!scrubber[j]) continue;
+			
+			if (scrubber[j][i] == '0' && zero < one){
+				scrubber[j] = 0;
+			}
+		}
+		scrubberResult[i] = zero < one ? '0' : '1';
+	}
+	oxygenResult[INPUT_SIZE] = '\0';
+	scrubberResult[INPUT_SIZE] = '\0';
+	printf("%s %d\n" , oxygenResult, charToInt(oxygenResult));
+	printf("%s %d\n" , scrubberResult, charToInt(scrubberResult));
+	printf("%d\n" , charToInt(oxygenResult) * charToInt(scrubberResult));
+	
 }
+
+
