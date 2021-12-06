@@ -45,7 +45,7 @@ struct point {
 	int ex;
 	int sy;
 	int ey;
-};
+}
 
 int main(){
 	FILE *f = fopen("input.txt", "r");
@@ -101,10 +101,10 @@ int main(){
 				}
 			}
 		} else {
-			int sx = points[i].sx;
-			int ex = points[i].ex;
-			int sy = points[i].sy;
-			int ey = points[i].ey;
+			sx = points[i].sx;
+			ex = points[i].ex;
+			sy = points[i].sy;
+			ey = points[i].ey;
 			
 			int steps = abs(ey - sy);
 			int dx = sx < ex ? 1 : -1;
