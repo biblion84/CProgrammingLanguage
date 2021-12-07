@@ -54,17 +54,13 @@ void quicksort(int *a, int low, int high){
 	}
 }
 
-int divide(int a, int b) {
-	return (int)(0.5f + (float)a / (float)b);
-}
-
 int main(){
-
+	
 	FILE *f = fopen("input.txt", "r");
 	char buf[10000];
 	int positions[1000] = {};
 	int idx = 0;
-
+	
 	while (fgets(buf, 10000, f)) {
 		char *line = buf;
 		while (true) {
@@ -81,35 +77,30 @@ int main(){
 	for (int i = 0; i < idx; i++) {
 		printf("%d, ", positions[i]);
 	}
-
-	int total = 0;
+	printf("\n");
+	quicksort(positions, 0, idx - 1);
+	
 	for (int i = 0; i < idx; i++) {
-		total += positions[i];
+		printf("%d, ", positions[i]);
 	}
 	printf("\n");
-	int mean = total / idx;
+	
+	int median = positions[idx / 2];
 	
 	int difference = 0;
-
-	for (int i = 0; i < idx; i++) {
-		int d = abs(positions[i] - mean);
-		int dif = divide(d * (d+1), 2);
-		
-		printf("%d to %d = %d fuel\n", positions[i], mean, dif);
-		difference += dif;
-	}
-
-	printf("mean used : %d\n", mean);
-	printf("fuel used : %d\n", difference);
-
-
 	
-
+	for (int i = 0; i < idx; i++) {
+		difference += abs(positions[i] - median);
+	}
+	
+	printf("fuel used : %d\n", difference);
+	
+	
+	
+	
 	printf("OK\n");
-
+	
 }
-
-
 
 
 
