@@ -29,104 +29,77 @@ char * getWord(char *word, char *line) {
 	return line;
 }
 
-#define SIZE 1000
-#define SIZE_INPUT 500
-
-int max(int a, int b) {
-	return a > b ? a : b;
+int partition(int *a, int low, int high){
+	int pivot = a[high];
+	
+	int i = low - 1;
+	
+	for (int j = low; j <= high; ++j){
+		if (a[j] <= pivot) {
+			i++;
+			int temp = a[j];
+			a[j] = a[i];
+			a[i] = temp;
+		}
+	}
+	return i;
 }
 
-int min(int a, int b) {
-	return a < b ? a : b;
+void quicksort(int *a, int low, int high){
+	if (low >= 0 && high >= 0 && low < high){
+		int p = partition(a, low, high);
+		
+		quicksort(a, low, p - 1);
+		quicksort(a, p + 1, high);
+	}
 }
-
-struct point {
-	int sx;
-	int ex;
-	int sy;
-	int ey;
-};
 
 int main(){
+
 	FILE *f = fopen("input.txt", "r");
-	char buffer[300];
-	
-	int *table = (int *)malloc(SIZE * SIZE * sizeof(int));
-	for (int i = 0; i < SIZE; i++) {
-		for (int j = 0; j < SIZE; j++) {
-			table[i * SIZE + j] = 0;
-		}
-	}
-	
-	point points[SIZE_INPUT];
-	
+	char buf[10000];
+	int positions[1000] = {};
 	int idx = 0;
-	while (fgets(buffer, 300, f)) {
-		char *line = buffer;
-		char n[5];
-		// 0,9 -> 5,9
-		// 0
-		line = getWord(n, line);
-		points[idx].sx = atoi(n);
-		// 9
-		line = getWord(n, line);
-		points[idx].sy = atoi(n);
-		
-		// ->
-		line = getWord(n, line);
-		
-		// 5
-		line = getWord(n, line);
-		points[idx].ex = atoi(n);
-		// 9
-		line = getWord(n, line);
-		points[idx].ey = atoi(n);
-		
-		idx++;
-	}
-	
-	for (int i = 0; i < SIZE_INPUT; i++) {
-		
-		
-		// lines
-		if (points[i].sx == points[i].ex || points[i].sy == points[i].ey) {
-			int sx = min(points[i].sx, points[i].ex);
-			int ex = max(points[i].sx, points[i].ex);
-			int sy = min(points[i].sy, points[i].ey);
-			int ey = max(points[i].sy, points[i].ey);
-			
-			for (int y = sy; y <= ey; y++) {
-				for (int x = sx; x <= ex; x++) {
-					table[y* SIZE + x]++;
-				}
-			}
-		} else {
-			int sx = points[i].sx;
-			int ex = points[i].ex;
-			int sy = points[i].sy;
-			int ey = points[i].ey;
-			
-			int steps = abs(ey - sy);
-			int dx = sx < ex ? 1 : -1;
-			int dy = sy < ey ? 1 : -1;
-			
-			for (int s = 0; s <= steps; s++){
-				table[(sy + (s * dy)) * SIZE + (sx + (s * dx))]++;
-			}
-		}
-		
-	}
-	
-	int count = 0;
-	
-	for (int y = 0; y < SIZE; y++) {
-		for (int x = 0; x < SIZE; x++) {
-			if (table[y * SIZE + x] >= 2) {
-				count++;
+
+	while (fgets(buf, 10000, f)) {
+		char *line = buf;
+		while (true) {
+			char n[5];
+			line = getWord(n, line);
+			if (n[0] >= '0' && n[0] <= '9') {
+				positions[idx++] = atoi(n);
+			} else {
+				break;
 			}
 		}
 	}
-	printf("result %d\n", count);
+	
+	for (int i = 0; i < idx; i++) {
+		printf("%d, ", positions[i]);
+	}
+	printf("\n");
+	quicksort(positions, 0, idx - 1);
+	
+	for (int i = 0; i < idx; i++) {
+		printf("%d, ", positions[i]);
+	}
+	printf("\n");
+
+	int median = positions[idx / 2];
+	
+	int difference = 0;
+
+	for (int i = 0; i < idx; i++) {
+		difference += abs(positions[i] - median);
+	}
+
+	printf("fuel used : %d\n", difference);
+
+
+	
+
+	printf("OK\n");
+
 }
 
 
