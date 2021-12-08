@@ -19,7 +19,7 @@ int len(char *s){
 
 char * getWord(char *word, char *line) {
 	int c = '\0';
-
+	
 	while (isSpace((c = *line++)));
 	
 	char *wp = word;
@@ -34,12 +34,12 @@ char * getWord(char *word, char *line) {
 }
 
 int main() {
-
+	
 	FILE *f = fopen("input.txt", "r");
 	char buf[300];
-
+	
 	int count = 0;
-
+	
 	while (fgets(buf, 300, f)) {
 		char *line = buf;
 		char w[20];
@@ -59,14 +59,14 @@ int main() {
 			printf("-%s-\n", w);
 		}
 	}
-
 	
-
+	
+	
 	printf("%d\n", count);
-
 	
-
-
+	
+	
+	
 }
 
 
