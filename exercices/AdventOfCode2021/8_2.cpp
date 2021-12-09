@@ -19,7 +19,7 @@ int len(char *s){
 
 char * getWord(char *word, char *line) {
 	int c = '\0';
-
+	
 	while (isSpace((c = *line++)));
 	
 	char *wp = word;
@@ -121,10 +121,10 @@ bool equal(char *a, char *b) {
 #define INPUT_SIZE 10
 
 int main() {
-
+	
 	FILE *f = fopen("input.txt", "r");
 	char buf[300];
-
+	
 	int count = 0;
 	int result = 0;
 	while (fgets(buf, 300, f)) {
@@ -136,7 +136,7 @@ int main() {
 			input[i] = (char *)malloc(INPUT_SIZE * sizeof(char));
 		}
 		int inputIdx = 0;
-
+		
 		// left part
 		while (isAlphaNum(line[0])) { // till '|'
 			line = getWord(w, line);
@@ -146,7 +146,7 @@ int main() {
 		char output[4][10] = {};
 		int outputIdx = 0;
 		line = getWord(w, line); // remove the '|'
-
+		
 		// right part
 		while (isAlphaNum(line[0])) {
 			line = getWord(w, line);
@@ -156,12 +156,12 @@ int main() {
 			strcpy(output[outputIdx++], w);
 			//printf("-%s-\n", w);
 		}
-
+		
 		char *one = findOfLen(2, input, INPUT_SIZE);
 		char *four = findOfLen(4, input, INPUT_SIZE);
 		char *seven = findOfLen(3, input, INPUT_SIZE);
 		char *eight = findOfLen(7, input, INPUT_SIZE);
-
+		
 		int lenNine = 6;
 		char *nine = contains(input, INPUT_SIZE, lenNine, four);
 		
@@ -173,7 +173,7 @@ int main() {
 				left[leftIdx++] = input[i];
 			}
 		}
-
+		
 		int lenZero = 6;
 		char *zero = contains(left, INPUT_SIZE - 1, lenZero, one);
 		
@@ -188,10 +188,10 @@ int main() {
 				}
 			}
 		}
-
+		
 		int lenThree = 5;
 		char *three = contains(input, INPUT_SIZE, lenThree, one);
-
+		
 		int lenFive = 5;
 		char *five = isContained(input, INPUT_SIZE, lenFive, six);
 		
@@ -205,7 +205,7 @@ int main() {
 				}
 			}
 		}
-
+		
 		char *inOrder[] = { zero, one, two, three, four, five, six, seven, eight, nine };
 		int power = 1;
 		int number = 0;
@@ -225,10 +225,10 @@ int main() {
 		
 	}
 	printf("%d\n", result);
-
 	
-
-
+	
+	
+	
 }
 
 
