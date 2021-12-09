@@ -8,9 +8,9 @@
 int main() {
 	FILE *f = fopen("input.txt", "r");
 	char buf[300];
-
+	
 	int hm[SIZE_Y][SIZE_X] = {};
-
+	
 	int y = 0;
 	while (fgets(buf, 300, f)) {
 		int x = 0;
@@ -19,7 +19,7 @@ int main() {
 		}
 		y++;
 	}
-
+	
 	int total = 0;
 	for (y = 0; y < SIZE_Y; y++) {
 		for (int x = 0; x < SIZE_X; x++){
@@ -39,6 +39,6 @@ int main() {
 			}
 		}
 	}
-
+	
 	printf("Ok Total : %d\n", total);
 }
