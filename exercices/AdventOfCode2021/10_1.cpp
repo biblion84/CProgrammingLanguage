@@ -66,6 +66,6 @@ int main() {
 		}
 	}
 	printf("%d total \n", total);
-
+	
 	
 }
