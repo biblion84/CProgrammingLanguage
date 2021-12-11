@@ -88,17 +88,25 @@ void insertBefore(node *l, node *toAdd, int valueBefore) {
 }
 
 
-void reverse(node *l) {
-	previous = l;
-	l = l->next;
+node *reverse(node *l) {
+	node *previous = 0;
 	while (l != 0) {
-		node *n = l->next;
+		node *next = l->next;
 		l->next = previous;
 		previous = l;
-		l = n;
+		l = next;
 	}
+	return previous;
 }
 
+node *reverseRecursive(node *current, node *previous) {
+	node *next = current->next;
+	current->next = previous;
+	if (next == 0) {
+		return current;
+	}
+	return reverseRecursive(next, current);
+}
 
 int main() {
 	node *list = newNode(0);
@@ -113,11 +121,10 @@ int main() {
 	//print(list);
 	node *s = split(list, 10);
 	print(list);
-	insertAfter(list, newNode(11), 5);
-	print(list);
-	insertBefore(list, newNode(22), 11);
-	print(list);
-	reverse(list);
-	print(list);
+	node *reversed = reverse(list);
+	print(reversed);
+	node *reReversed = reverseRecursive(reversed, 0);
+	print(reReversed);
+	
 	
 }
