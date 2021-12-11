@@ -54,7 +54,7 @@ node *split(node *l, int where) {
 	for (i = 0; i < (where - 1) && l != 0; i++){
 		l = l->next;
 	}
-
+	
 	if (i == (where - 1)) {
 		node *newN = l->next;
 		l->next = 0;
@@ -90,13 +90,13 @@ void insertBefore(node *l, node *toAdd, int valueBefore) {
 
 int main() {
 	node *list = newNode(0);
-
+	
 	for (int i = 0; i < 10; i++) {
 		node *n = newNode(i);
 		list = append(list, n);
 	}
 	node *ll = copy(list);
-
+	
 	list = merge(list, ll);
 	//print(list);
 	node *s = split(list, 10);
