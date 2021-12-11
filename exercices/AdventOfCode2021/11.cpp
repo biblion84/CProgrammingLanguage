@@ -28,7 +28,7 @@ void flash(int y, int x) {
 int main() {
 	FILE *f = fopen("input.txt", "r");
 	char buf[300];
-
+	
 	{
 		int y = 0;
 		while (fgets(buf, 300, f)) {
@@ -40,7 +40,7 @@ int main() {
 			
 		}
 	}
-
+	
 	for (int step = 1; step < 1000; step++){
 		for (int y = 0; y < 10; y++) {
 			for (int x = 0; x < 10; x++) {
