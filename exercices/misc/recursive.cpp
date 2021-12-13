@@ -100,7 +100,7 @@ bool prime(int n, int divisor) {
 	if (n % divisor == 0) {
 		return false;
 	}
-
+	
 	return prime(n, divisor + 1);
 }
 
@@ -135,9 +135,76 @@ bool palindrome(char *s, int len, int current) {
 	return palindrome(s, len, current + 1);
 }
 
+
+int power(int n, int pow) {
+	if (pow <= 0) {
+		return 1;
+	}
+	if (pow == 1) {
+		return n;
+	}
+	return n * power(n, pow - 1);
+}
+
+void hailstone(int n) {
+	printf("%d, ", n);
+	if (n == 1) {
+		return;
+	}
+	if (n % 2 == 0) {
+		hailstone(n / 2);
+	} else {
+		hailstone((n * 3) + 1);
+	}
+}
+
+void copy(char *in, char *out) {
+	if (*in == '\0') {
+		*out = '\0';
+		return;
+	}
+	*out = *in;
+	copy(in + 1, out + 1);
+}
+
+void firstCapital(char *s) {
+	if (*s == '\0') {
+		printf("No capital\n");
+		return;
+	}
+	if (*s >= 'A' && *s <= 'Z') {
+		printf("First capital : %c\n", *s);
+		return;
+	}
+	firstCapital(s + 1);
+}
+
+int binSearch(int *a, int search, int low, int high) {
+	if (low > high) {
+		return -1;
+	}
+	int middle = (low + high) / 2;
+	if (a[middle] == search) {
+		return middle;
+	} else if (a[middle] > search) {
+		return binSearch(a, search, low, middle - 1);
+	} else {
+		return binSearch(a, search, middle + 1, high);
+	}
+}
+
 int main() {
-
-	printf("%d\n", palindrome("kazyak", 4, 0));
-
+	
+	int a[10];
+	for (int i = 0; i < 10; i++) {
+		a[i] = i * 3;
+		//printf("%d\n", a[i]);
+	}
+	
+	int idx = binSearch(a, 9, 0, 9);
+	printf("index : %d, %d", idx, a[idx]);
+	
+	
+	
 	printf("\nOK\n");
 }
