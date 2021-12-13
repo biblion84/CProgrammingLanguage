@@ -14,10 +14,10 @@ struct Grid {
 void foldY(Grid *grid, int foldY) {
 	for (int y = foldY + 1; y < grid->sizeY; y++) {
 		for (int x = 0; x < grid->sizeX; x++) {
-			if (grid->cell[y][x]) {
+			if (grid->cell[y * SIZE + x]) {
 				int newY = foldY - (y - foldY);
 				if (newY >= 0) {
-					grid->cell[newY][x] = 1;
+					grid->cell[newY* SIZE + x] = 1;
 				}
 			}
 		}
@@ -29,10 +29,10 @@ void foldY(Grid *grid, int foldY) {
 void foldX(Grid *grid, int foldX) {
 	for (int y = 0; y < grid->sizeY; y++) {
 		for (int x = foldX + 1; x < grid->sizeX; x++) {
-			if (grid->cell[y][x]) {
+			if (grid->cell[y * SIZE + x]) {
 				int newX = foldX - (x - foldX);
 				if (newX >= 0) {
-					grid->cell[y][newX] = 1;
+					grid->cell[y * SIZE + newX] = 1;
 				}
 			}
 		}
@@ -44,7 +44,7 @@ int count(Grid *grid) {
 	int result = 0;
 	for (int y = 0; y < grid->sizeY; y++) {
 		for (int x = 0; x < grid->sizeX; x++) {
-			if (grid->cell[y][x]) {
+			if (grid->cell[y * SIZE + x]) {
 				result++;
 			}
 		}
@@ -56,14 +56,11 @@ int main() {
 	Grid grid;
 	grid.sizeX = SIZE;
 	grid.sizeY = SIZE;
-	grid.cell = (bool **)malloc(SIZE * sizeof(bool *));
-	for (int y = 0; y < SIZE; y++) {
-		grid.cell[y] = (bool *)malloc(SIZE * sizeof(bool *));
-	}
+	grid.cell = (bool *)malloc(SIZE * SIZE * sizeof(bool *));
 	
 	for (int y = 0; y < grid.sizeY; y++) {
 		for (int x = 0; x < grid.sizeX; x++) {
-			grid.cell[y][x] = 0;
+			grid.cell[y * SIZE + x] = 0;
 		}
 	}
 	
@@ -80,7 +77,7 @@ int main() {
 		line = getWord(n, line);
 		y = atoi(n);
 		
-		grid.cell[y][x] = 1;
+		grid.cell[y * SIZE + x] = 1;
 	}
 	
 	// No time to parse gotta go fast
@@ -99,7 +96,7 @@ int main() {
 	
 	for (int y = 0; y < grid.sizeY; y++) {
 		for (int x = 0; x < grid.sizeX; x++) {
-			if (grid.cell[y][x]) {
+			if (grid.cell[y * SIZE + x]) {
 				printf("#");
 			} else {
 				printf(" ");

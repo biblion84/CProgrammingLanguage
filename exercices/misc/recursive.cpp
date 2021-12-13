@@ -100,7 +100,7 @@ bool prime(int n, int divisor) {
 	if (n % divisor == 0) {
 		return false;
 	}
-
+	
 	return prime(n, divisor + 1);
 }
 
@@ -136,8 +136,8 @@ bool palindrome(char *s, int len, int current) {
 }
 
 int main() {
-
+	
 	printf("%d\n", palindrome("kazyak", 4, 0));
-
+	
 	printf("\nOK\n");
 }
