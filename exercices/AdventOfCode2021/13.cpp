@@ -60,7 +60,7 @@ int main() {
 	for (int y = 0; y < SIZE; y++) {
 		grid.cell[y] = (bool *)malloc(SIZE * sizeof(bool *));
 	}
-
+	
 	for (int y = 0; y < grid.sizeY; y++) {
 		for (int x = 0; x < grid.sizeX; x++) {
 			grid.cell[y][x] = 0;
@@ -79,10 +79,10 @@ int main() {
 		x = atoi(n);
 		line = getWord(n, line);
 		y = atoi(n);
-
+		
 		grid.cell[y][x] = 1;
 	}
-
+	
 	// No time to parse gotta go fast
 	foldX(&grid, 655);
 	foldY(&grid, 447);
