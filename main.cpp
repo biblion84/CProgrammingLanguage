@@ -135,9 +135,55 @@ bool palindrome(char *s, int len, int current) {
 	return palindrome(s, len, current + 1);
 }
 
+
+int power(int n, int pow) {
+	if (pow <= 0) {
+		return 1;
+	}
+	if (pow == 1) {
+		return n;
+	}
+	return n * power(n, pow - 1);
+}
+
+void hailstone(int n) {
+	printf("%d, ", n);
+	if (n == 1) {
+		return;
+	}
+	if (n % 2 == 0) {
+		hailstone(n / 2);
+	} else {
+		hailstone((n * 3) + 1);
+	}
+}
+
+void copy(char *in, char *out) {
+	if (*in == '\0') {
+		*out = '\0';
+		return;
+	}
+	*out = *in;
+	copy(in + 1, out + 1);
+}
+
+void firstCapital(char *s) {
+	if (*s == '\0') {
+		printf("No capital\n");
+		return;
+	}
+	if (*s >= 'A' && *s <= 'Z') {
+		printf("First capital : %c\n", *s);
+		return;
+	}
+	firstCapital(s + 1);
+}
+
 int main() {
-
-	printf("%d\n", palindrome("kazyak", 4, 0));
-
+	
+	firstCapital("hello");
+	firstCapital("heLlo");
+	firstCapital("");
+	
 	printf("\nOK\n");
 }
