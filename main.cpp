@@ -179,11 +179,32 @@ void firstCapital(char *s) {
 	firstCapital(s + 1);
 }
 
+int binSearch(int *a, int search, int low, int high) {
+	if (low > high) {
+		return -1;
+	}
+	int middle = (low + high) / 2;
+	if (a[middle] == search) {
+		return middle;
+	} else if (a[middle] > search) {
+		return binSearch(a, search, low, middle - 1);
+	} else {
+		return binSearch(a, search, middle + 1, high);
+	}
+}
+
 int main() {
 	
-	firstCapital("hello");
-	firstCapital("heLlo");
-	firstCapital("");
+	int a[10];
+	for (int i = 0; i < 10; i++) {
+		a[i] = i * 3;
+		//printf("%d\n", a[i]);
+	}
+	
+	int idx = binSearch(a, 9, 0, 9);
+	printf("index : %d, %d", idx, a[idx]);
+
+
 	
 	printf("\nOK\n");
 }
