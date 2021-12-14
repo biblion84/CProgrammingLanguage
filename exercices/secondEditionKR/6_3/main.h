@@ -105,6 +105,12 @@ char * getWord(char *word, char *line) {
 	return line;
 }
 
+int len(char *s){
+	int i;
+	for (i = 0; s[i] != '\0'; ++i);
+	return i;
+}
+
 void reverse(char s[]){
 	int i, j;
 	int len = 0;

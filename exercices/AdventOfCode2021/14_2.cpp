@@ -31,50 +31,50 @@ int index(pair *pairs, int pairsLen, char a, char b) {
 const int LEN = 100;
 
 int main() {
-
+	
 	char *primary = "SNPVPFCPPKSBNSPSPSOF";
-
+	
 	FILE *f = fopen("input.txt", "r");
 	char buffer[300] = {};
-
+	
 	pair pairsPrimary[LEN] = {};
 	long long pairsSecondary[LEN] = {};
 	int pairIdx = 0;
-
+	
 	while (fgets(buffer, 300, f) != 0) {
 		char *line = buffer;
 		line = getWord(pairsPrimary[pairIdx].from, line);
-
+		
 		char temp[5];
 		line = getWord(temp, line); // remove ->
-
+		
 		line = getWord(pairsPrimary[pairIdx].to, line);
-
+		
 		pairIdx++;
 	}
-
+	
 	// 'A' to 'Z'
 	int leftovers[26] = {};
-
+	
 	for (int i = 0; primary[i + 1] != '\0'; i++) {
 		int idx = index(pairsPrimary, LEN, primary[i], primary[i + 1]);
 		if (idx != -1) {
 			pairsPrimary[idx].count++;
 		}
 	}
-
-
+	
+	
 	for (int step = 0; step < 40; step++) {
 		for (int i = 0; i < LEN; i++) {
 			pairsSecondary[i] = 0; // reset
 		}
-
+		
 		for (int i = 0; i < LEN; i++) {
 			pair p = pairsPrimary[i];
 			if (p.count > 0) {
 				char addin = p.to[0];
 				// example CH -> B
-
+				
 				// test for CB
 				int idx = index(pairsPrimary, LEN, p.from[0], addin);
 				if (idx != -1) {
@@ -83,7 +83,7 @@ int main() {
 					// leftover ? 
 					printf("LEFTOVER\n");
 				}
-
+				
 				// test for BH
 				idx = index(pairsPrimary, LEN, addin, p.from[1]);
 				if (idx != -1) {
@@ -98,7 +98,7 @@ int main() {
 			pairsPrimary[i].count = pairsSecondary[i]; // reset
 		}
 	}
-
+	
 	long long count[26] = {};
 	for (int i = 0; i < LEN; i++) {
 		count[pairsPrimary[i].from[0] - 'A'] += pairsPrimary[i].count;
@@ -112,11 +112,11 @@ int main() {
 	}
 	count[primary[0] - 'A']++; // add to first and last as they're not counted twice.
 	count[primary[len(primary) - 1] - 'A']++; // add to first and last as they're not counted twice.
-
+	
 	for (int i = 0; i < 26; i++) {
 		printf("%c : %lld\n", 'A' + i, count[i]);
 	}
-
+	
 	long long most = 0;
 	long long least = 0xFFFFFFFFFFFFFF;
 	for (int i = 0; i < 26; i++) {
@@ -132,7 +132,7 @@ int main() {
 	}
 	printf("most : %lld, least : %lld\n", most, least);
 	printf("result %lld\n", most- least);
-
+	
 	
 	printf("\nOK\n");
 }
