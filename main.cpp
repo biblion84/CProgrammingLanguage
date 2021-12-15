@@ -32,7 +32,7 @@ bool in(fifo *list, int x, int y) {
 }
 
 void add(fifo *list, int x, int y) {
-	if (in(list, x,y)){ // do not add the same node twice
+	if (in(list, x,y)){ // do not add the same node
 		return;
 	}
 	fifoElem *e = (fifoElem *)malloc(sizeof(fifoElem));
@@ -58,7 +58,7 @@ fifoElem *pop(fifo *list) {
 }
 
 
-#define LEN 10
+#define LEN 100
 
 int main() {
 	FILE *f = fopen("input.txt", "r");
@@ -85,7 +85,7 @@ int main() {
 	node *nodes = (node *)malloc(LEN * LEN * sizeof(node));
 	for (int y = 0; y < LEN; y++) {
 		for (int x = 0; x < LEN; x++) {
-			nodes[y * LEN + x].children = (node **)malloc(2 * sizeof(node *));  // each adjacent cases..
+			nodes[y * LEN + x].children = (node **)malloc(2 * sizeof(node *));  // down and right are the only child node
 		} 
 	}
 	
@@ -109,21 +109,18 @@ int main() {
 	// Set childrens
 	for (int y = 0; y < LEN; y++) {
 		for (int x = 0; x < LEN; x++) {
-			for (int i = 0; i < 2; i++) {
-				nodes[y * LEN + x].children[i] = 0;
+			int newX = x + 1;
+			int newY = y + 1;
+			if (newX < LEN) {
+				nodes[y * LEN + x].children[0] = &nodes[y * LEN + newX];
+			} else {
+				nodes[y * LEN + x].children[0] = 0;
 			}
-			if (x + 1 < LEN) {
-				nodes[y * LEN + x].children[0] = &nodes[y * LEN + x + 1];
-			} 
-			if (y + 1 < LEN) {
-				nodes[y * LEN + x].children[1] = &nodes[y + 1 * LEN + x];
+			if (newY < LEN) {
+				nodes[y * LEN + x].children[1] = &nodes[newY * LEN + x];
+			} else {
+				nodes[y * LEN + x].children[1] = 0;
 			}
-			//if (x - 1 >= 0) {
-			//	nodes[y * LEN + x].children[2] = &nodes[y * LEN + x - 1];
-			//}
-			//if (y - 1 >= 0) {
-			//	nodes[y * LEN + x].children[3] = &nodes[(y - 1) * LEN + x];
-			//}
 		}
 	}
 
