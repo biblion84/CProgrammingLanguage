@@ -3,136 +3,172 @@
 #include <stdlib.h>
 #include "main.h"
 
-struct pair {
-	char from[3];
-	char to[2];
-	long long count;
+struct node {
+	int value;
+	int pathValue;
+	node **children; // down and right are the only child node
 };
 
-char getPair(pair *pairs, int pairsLen, char a, char b) {
-	for (int i = 0; i < pairsLen; i++) {
-		if (pairs[i].from[0] == a && pairs[i].from[1] == b) {
-			return pairs[i].to[0];
+struct fifoElem {
+	fifoElem *next;
+	int x;
+	int y;
+};
+
+struct fifo {
+	fifoElem *head;
+	fifoElem *tail;
+};
+
+bool in(fifo *list, int x, int y) {
+	fifoElem *p = list->head;
+	while(p != 0){
+		if (p->x == x && p->y == y) {
+			return true;
 		}
+		p = p->next;
 	}
-	return '\0';
+	return false;
 }
 
-int index(pair *pairs, int pairsLen, char a, char b) {
-	for (int i = 0; i < pairsLen; i++) {
-		if (pairs[i].from[0] == a && pairs[i].from[1] == b) {
-			return i;
-		}
+void add(fifo *list, int x, int y) {
+	if (in(list, x,y)){ // do not add the same node twice
+		return;
 	}
-	return -1;
+	fifoElem *e = (fifoElem *)malloc(sizeof(fifoElem));
+	e->x = x;
+	e->y = y;
+	e->next = 0;
+	if (list->head == 0) {
+		list->head = e;
+		list->tail = e;
+	} else {
+		list->tail->next = e;
+		list->tail = e;
+	}
+}
+
+fifoElem *pop(fifo *list) {
+	if (list->head == 0) {
+		return 0;
+	}
+	fifoElem *e = list->head;
+	list->head = e->next;
+	return e;
 }
 
 
-const int LEN = 100;
+#define LEN 10
 
 int main() {
-
-	char *primary = "SNPVPFCPPKSBNSPSPSOF";
-
 	FILE *f = fopen("input.txt", "r");
 	char buffer[300] = {};
 
-	pair pairsPrimary[LEN] = {};
-	long long pairsSecondary[LEN] = {};
-	int pairIdx = 0;
-
-	while (fgets(buffer, 300, f) != 0) {
-		char *line = buffer;
-		line = getWord(pairsPrimary[pairIdx].from, line);
-
-		char temp[5];
-		line = getWord(temp, line); // remove ->
-
-		line = getWord(pairsPrimary[pairIdx].to, line);
-
-		pairIdx++;
-	}
-
-	// 'A' to 'Z'
-	int leftovers[26] = {};
-
-	for (int i = 0; primary[i + 1] != '\0'; i++) {
-		int idx = index(pairsPrimary, LEN, primary[i], primary[i + 1]);
-		if (idx != -1) {
-			pairsPrimary[idx].count++;
+	int table[LEN][LEN] = {};
+	{
+		int y = 0;
+		while (fgets(buffer, 300, f) != 0) {
+			for (int x = 0; buffer[x] != '\0'; x++) {
+				table[y][x] = buffer[x] - '0';
+			}
+			++y;
 		}
 	}
 
-
-	for (int step = 0; step < 40; step++) {
-		for (int i = 0; i < LEN; i++) {
-			pairsSecondary[i] = 0; // reset
+	for (int y = 0; y < LEN; y++) {
+		for (int x = 0; x < LEN; x++) {
+			printf("%d", table[y][x]);
 		}
+		printf("\n");
+	}
 
-		for (int i = 0; i < LEN; i++) {
-			pair p = pairsPrimary[i];
-			if (p.count > 0) {
-				char addin = p.to[0];
-				// example CH -> B
+	node *nodes = (node *)malloc(LEN * LEN * sizeof(node));
+	for (int y = 0; y < LEN; y++) {
+		for (int x = 0; x < LEN; x++) {
+			nodes[y * LEN + x].children = (node **)malloc(2 * sizeof(node *));  // each adjacent cases..
+		} 
+	}
+	
+	// Populate every node
+	for (int y = 0; y < LEN; y++) {
+		for (int x = 0; x < LEN; x++) {
+			nodes[y * LEN + x].value = table[y][x];
+			nodes[y * LEN + x].pathValue = 0;
+		}
+	}
+//
+	//for (int y = 0; y < LEN; y++) {
+	//	for (int x = 0; x < LEN; x++) {
+	//		printf("%d", nodes[y * LEN + x].value);
+	//	}
+	//	printf("\n");
+	//}
+	// I could also not iterate multiple times to set values
+	// But I wont
 
-				// test for CB
-				int idx = index(pairsPrimary, LEN, p.from[0], addin);
-				if (idx != -1) {
-					pairsSecondary[idx]+= p.count;
-				} else {
-					// leftover ? 
-					printf("LEFTOVER\n");
-				}
+	// Set childrens
+	for (int y = 0; y < LEN; y++) {
+		for (int x = 0; x < LEN; x++) {
+			for (int i = 0; i < 2; i++) {
+				nodes[y * LEN + x].children[i] = 0;
+			}
+			if (x + 1 < LEN) {
+				nodes[y * LEN + x].children[0] = &nodes[y * LEN + x + 1];
+			} 
+			if (y + 1 < LEN) {
+				nodes[y * LEN + x].children[1] = &nodes[y + 1 * LEN + x];
+			}
+			//if (x - 1 >= 0) {
+			//	nodes[y * LEN + x].children[2] = &nodes[y * LEN + x - 1];
+			//}
+			//if (y - 1 >= 0) {
+			//	nodes[y * LEN + x].children[3] = &nodes[(y - 1) * LEN + x];
+			//}
+		}
+	}
 
-				// test for BH
-				idx = index(pairsPrimary, LEN, addin, p.from[1]);
-				if (idx != -1) {
-					pairsSecondary[idx]+= p.count;
-				} else {
-					printf("LEFTOVER\n");
-					// leftover ? 
-				}
+	fifo list;
+	fifoElem first = {};
+	first.x = LEN - 1;
+	first.y = LEN - 1;
+	list.head = &first;
+	list.tail = &first;
+	fifoElem *e;
+	while ((e = pop(&list)) != 0 && !(e->x == 0 && e->y == 0)) {
+		node *n = &nodes[e->y * LEN + e->x];
+
+		int minPathValue = 1 << 30;
+		if (n->children[0]) {
+			minPathValue = n->children[0]->pathValue;
+		}
+		if (n->children[1]) {
+			if (n->children[1]->pathValue < minPathValue) {
+				minPathValue = n->children[1]->pathValue;
 			}
 		}
-		for (int i = 0; i < LEN; i++) {
-			pairsPrimary[i].count = pairsSecondary[i]; // reset
+		if (minPathValue == (1 << 30)) {
+			minPathValue = 0;
+		}
+
+		n->pathValue = minPathValue + n->value;
+		int newX = e->x - 1;
+		if (newX >= 0) {
+			add(&list, newX, e->y);
+		}
+		int newY = e->y - 1;
+		if (newY >= 0) {
+			add(&list, e->x, newY);
 		}
 	}
+	printf("min right = %d\n", nodes[0 * LEN + 1].pathValue);
+	printf("min below = %d\n", nodes[1 * LEN + 0].pathValue);
+	for (int y = 0; y < LEN; y++) {
+		for (int x = 0; x < LEN; x++) {
 
-	long long count[26] = {};
-	for (int i = 0; i < LEN; i++) {
-		count[pairsPrimary[i].from[0] - 'A'] += pairsPrimary[i].count;
-		count[pairsPrimary[i].from[1] - 'A'] += pairsPrimary[i].count;
-		//count[pairsPrimary[i].to[0] - 'A'] += pairsPrimary[i].count;
-		//printf("%s : %d\n", pairsPrimary[i].to, pairsPrimary[i].count);
+			printf("%3d, ", nodes[y * LEN + x].pathValue);
+		} 
+		printf("\n");
 	}
-	for (int i = 0; i < 26; i++) {
-		count[i] = count[i] / 2;
-		//printf("%s : %d\n", pairsPrimary[i].to, pairsPrimary[i].count);
-	}
-	count[primary[0] - 'A']++; // add to first and last as they're not counted twice.
-	count[primary[len(primary) - 1] - 'A']++; // add to first and last as they're not counted twice.
+	printf("Ok\n");
 
-	for (int i = 0; i < 26; i++) {
-		printf("%c : %lld\n", 'A' + i, count[i]);
-	}
-
-	long long most = 0;
-	long long least = 0xFFFFFFFFFFFFFF;
-	for (int i = 0; i < 26; i++) {
-		if (count[i] == 0) {
-			continue;
-		}
-		if (count[i] > most) {
-			most = count[i];
-		}
-		if (count[i] < least) {
-			least = count[i];
-		}
-	}
-	printf("most : %lld, least : %lld\n", most, least);
-	printf("result %lld\n", most- least);
-
-	
-	printf("\nOK\n");
 }
