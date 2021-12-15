@@ -3,179 +3,117 @@
 #include <stdlib.h>
 #include "main.h"
 
-struct node {
-	int value;
-	int pathValue;
-	node **children; // down and right are the only child node
-};
+const int INIT_LEN = 100;
+const int LEN = INIT_LEN * 5;
+const int MAX = 1 << 30;
 
-struct fifoElem {
-	fifoElem *next;
-	int x;
-	int y;
-};
+// Should use a heap
+// I hope djisktra won't read my code
+int smallest(int *distances, bool *visited) {
+	int min = 1 << 30;
+	int index = 0;
 
-struct fifo {
-	fifoElem *head;
-	fifoElem *tail;
-};
-
-bool in(fifo *list, int x, int y) {
-	fifoElem *p = list->head;
-	while(p != 0){
-		if (p->x == x && p->y == y) {
-			return true;
+	for (int i = 0; i < LEN * LEN; i++) {
+		if (distances[i] < min && !visited[i]) {
+			min = distances[i];
+			index = i;
 		}
-		p = p->next;
 	}
-	return false;
+
+	return index;
 }
-
-void add(fifo *list, int x, int y) {
-	if (in(list, x,y)){ // do not add the same node
-		return;
-	}
-	fifoElem *e = (fifoElem *)malloc(sizeof(fifoElem));
-	e->x = x;
-	e->y = y;
-	e->next = 0;
-	if (list->head == 0) {
-		list->head = e;
-		list->tail = e;
-	} else {
-		list->tail->next = e;
-		list->tail = e;
-	}
-}
-
-fifoElem *pop(fifo *list) {
-	if (list->head == 0) {
-		return 0;
-	}
-	fifoElem *e = list->head;
-	list->head = e->next;
-	return e;
-}
-
-
-#define LEN 100
 
 int main() {
 	FILE *f = fopen("input.txt", "r");
 	char buffer[300] = {};
 
-	int table[LEN][LEN] = {};
+	int *table = (int *)malloc(LEN * LEN * sizeof(int));
 	{
 		int y = 0;
 		while (fgets(buffer, 300, f) != 0) {
 			for (int x = 0; buffer[x] != '\0'; x++) {
-				table[y][x] = buffer[x] - '0';
+				table[y * LEN + x] = buffer[x] - '0';
 			}
 			++y;
 		}
 	}
-
-	//for (int y = 0; y < LEN; y++) {
-	//	for (int x = 0; x < LEN; x++) {
-	//		printf("%d", table[y][x]);
-	//	}
-	//	printf("\n");
-	//}
-
-	node *nodes = (node *)malloc(LEN * LEN * sizeof(node));
-	for (int y = 0; y < LEN; y++) {
-		for (int x = 0; x < LEN; x++) {
-			nodes[y * LEN + x].children = (node **)malloc(2 * sizeof(node *));  // down and right are the only child node
-		} 
+	for (int y = 0; y < INIT_LEN; y++){
+		for (int x = 0; x < INIT_LEN; x++) {
+			for (int yy = 0; yy < 5; yy++) {
+				for (int xx = 0; xx < 5; xx++) {
+					int newY = y + (yy * INIT_LEN);
+					int newX = x + (xx * INIT_LEN);
+					int value = table[y * LEN + x] + yy + xx;
+					if (value > 9) {
+						value = 1 + (value % 10);
+					}
+					table[newY * LEN + newX] = value;
+				}
+			}
+		}
 	}
+#if 0
+	printf("\n");
+	printf("\n");
 	
-	// Populate every node
 	for (int y = 0; y < LEN; y++) {
 		for (int x = 0; x < LEN; x++) {
-			nodes[y * LEN + x].value = table[y][x];
-			nodes[y * LEN + x].pathValue = 0;
+			printf("%d", table[y * LEN + x]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+		printf("\n");
+#endif
+	
+
+	int *distances  = (int *)malloc(LEN * LEN * sizeof(int));
+	bool *visited  = (bool *)malloc(LEN * LEN * sizeof(bool));
+
+	for (int i = 0; i < LEN * LEN; i++) {
+		distances[i] = MAX;
+		visited[i] = false;
+	}
+
+	distances[0] = 0; // The distance from the start is 0
+
+	for (int i = 0; i < (LEN * LEN) - 1; i++) {
+		int cur = smallest(distances, visited);
+		
+		visited[cur] = true;
+		
+		int currentX = cur % LEN;
+		int previousX = -1;
+		if (currentX > 0) {
+			previousX = cur - 1;
+		}
+
+		int nextX = -1;
+		if (currentX < LEN - 1) {
+			nextX = cur + 1;
+		}
+		int previousY = cur - LEN;
+		int nextY = cur + LEN;
+
+		int t[4] = { previousY, previousX, nextY, nextX };
+		for (int n = 0; n < 4; n++) {
+			int next = t[n];
+			if (next >= 0 && next < LEN * LEN) {
+				if (!visited[next] && (distances[cur] + table[next]) < distances[next] ) {
+					distances[next] = distances[cur] + table[next];
+				}
+			}
 		}
 	}
-//
-	//for (int y = 0; y < LEN; y++) {
+
+	//for (int y = 0; y < LEN; y++){
 	//	for (int x = 0; x < LEN; x++) {
-	//		printf("%d", nodes[y * LEN + x].value);
+	//		printf("%3d ", distances[y * LEN + x]);
 	//	}
 	//	printf("\n");
 	//}
-	// I could also not iterate multiple times to set values
-	// But I wont
+	printf("%d", distances[(LEN * LEN) - 1]);
 
-	// Set childrens
-	for (int y = 0; y < LEN; y++) {
-		for (int x = 0; x < LEN; x++) {
-			int newX = x - 1;
-			int newY = y - 1;
-			if (newX >= 0) {
-				nodes[y * LEN + x].children[0] = &nodes[y * LEN + newX];
-			} else {
-				nodes[y * LEN + x].children[0] = 0;
-			}
-			if (newY >= 0) {
-				nodes[y * LEN + x].children[1] = &nodes[newY * LEN + x];
-			} else {
-				nodes[y * LEN + x].children[1] = 0;
-			}
-		}
-	}
-
-	fifo list;
-	fifoElem first = {};
-	first.x = 0;
-	first.y = 0;
-	list.head = &first;
-	list.tail = &first;
-	fifoElem *e;
-	while ((e = pop(&list)) != 0) {
-		node *n = &nodes[e->y * LEN + e->x];
-
-		int minPathValue = 1 << 30;
-		if (n->children[0]) {
-			minPathValue = n->children[0]->pathValue;
-		}
-		if (n->children[1]) {
-			if (n->children[1]->pathValue < minPathValue) {
-				minPathValue = n->children[1]->pathValue;
-			}
-		}
-		if (minPathValue == (1 << 30)) {
-			minPathValue = 0;
-		}
-
-		n->pathValue = minPathValue + n->value;
-		int newX = e->x + 1;
-		if (newX < LEN) {
-			add(&list, newX, e->y);
-		}
-		int newY = e->y + 1;
-		if (newY < LEN) {
-			add(&list, e->x, newY);
-		}
-	}
-
-	//printf("min right = %d\n", nodes[0 * LEN + 1].pathValue);
-	//printf("min below = %d\n", nodes[1 * LEN + 0].pathValue);
-	//for (int y = 0; y < LEN; y++) {
-	//	for (int x = 0; x < LEN; x++) {
-//
-	//		printf("%3d ", nodes[y * LEN + x].pathValue);
-	//	} 
-	//	printf("\n");
-	//}
-	//printf("Ok\n");
-	//
-	//for (int y = 0; y < LEN; y++) {
-	//	for (int x = 0; x < LEN; x++) {
-	//		
-	//		printf("%4d", table[y][x]);
-	//	} 
-	//	printf("\n");
-	//}
-	//printf("Ok\n");
+	printf("Ok\n");
 
 }
