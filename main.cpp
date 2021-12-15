@@ -75,12 +75,12 @@ int main() {
 		}
 	}
 
-	for (int y = 0; y < LEN; y++) {
-		for (int x = 0; x < LEN; x++) {
-			printf("%d", table[y][x]);
-		}
-		printf("\n");
-	}
+	//for (int y = 0; y < LEN; y++) {
+	//	for (int x = 0; x < LEN; x++) {
+	//		printf("%d", table[y][x]);
+	//	}
+	//	printf("\n");
+	//}
 
 	node *nodes = (node *)malloc(LEN * LEN * sizeof(node));
 	for (int y = 0; y < LEN; y++) {
@@ -109,14 +109,14 @@ int main() {
 	// Set childrens
 	for (int y = 0; y < LEN; y++) {
 		for (int x = 0; x < LEN; x++) {
-			int newX = x + 1;
-			int newY = y + 1;
-			if (newX < LEN) {
+			int newX = x - 1;
+			int newY = y - 1;
+			if (newX >= 0) {
 				nodes[y * LEN + x].children[0] = &nodes[y * LEN + newX];
 			} else {
 				nodes[y * LEN + x].children[0] = 0;
 			}
-			if (newY < LEN) {
+			if (newY >= 0) {
 				nodes[y * LEN + x].children[1] = &nodes[newY * LEN + x];
 			} else {
 				nodes[y * LEN + x].children[1] = 0;
@@ -126,12 +126,12 @@ int main() {
 
 	fifo list;
 	fifoElem first = {};
-	first.x = LEN - 1;
-	first.y = LEN - 1;
+	first.x = 0;
+	first.y = 0;
 	list.head = &first;
 	list.tail = &first;
 	fifoElem *e;
-	while ((e = pop(&list)) != 0 && !(e->x == 0 && e->y == 0)) {
+	while ((e = pop(&list)) != 0) {
 		node *n = &nodes[e->y * LEN + e->x];
 
 		int minPathValue = 1 << 30;
@@ -148,24 +148,34 @@ int main() {
 		}
 
 		n->pathValue = minPathValue + n->value;
-		int newX = e->x - 1;
-		if (newX >= 0) {
+		int newX = e->x + 1;
+		if (newX < LEN) {
 			add(&list, newX, e->y);
 		}
-		int newY = e->y - 1;
-		if (newY >= 0) {
+		int newY = e->y + 1;
+		if (newY < LEN) {
 			add(&list, e->x, newY);
 		}
 	}
-	printf("min right = %d\n", nodes[0 * LEN + 1].pathValue);
-	printf("min below = %d\n", nodes[1 * LEN + 0].pathValue);
-	for (int y = 0; y < LEN; y++) {
-		for (int x = 0; x < LEN; x++) {
 
-			printf("%3d, ", nodes[y * LEN + x].pathValue);
-		} 
-		printf("\n");
-	}
-	printf("Ok\n");
+	//printf("min right = %d\n", nodes[0 * LEN + 1].pathValue);
+	//printf("min below = %d\n", nodes[1 * LEN + 0].pathValue);
+	//for (int y = 0; y < LEN; y++) {
+	//	for (int x = 0; x < LEN; x++) {
+//
+	//		printf("%3d ", nodes[y * LEN + x].pathValue);
+	//	} 
+	//	printf("\n");
+	//}
+	//printf("Ok\n");
+	//
+	//for (int y = 0; y < LEN; y++) {
+	//	for (int x = 0; x < LEN; x++) {
+	//		
+	//		printf("%4d", table[y][x]);
+	//	} 
+	//	printf("\n");
+	//}
+	//printf("Ok\n");
 
 }
