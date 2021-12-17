@@ -22,7 +22,7 @@ int main() {
 	point targetMax = {};
 	targetMax.x = 70;
 	targetMax.y = -148;	
-
+	
 	int possibilities = 0;
 	for (int x = -1000; x < 500; x++) {
 		for (int y = -1000; y < 500; y++) {
@@ -34,11 +34,11 @@ int main() {
 			for (int step = 0; step < 1000; step++) {
 				position.x += velocity.x;
 				position.y += velocity.y;
-
+				
 				if (position.y > maxY) {
 					maxY = position.y;
 				}
-
+				
 				if (position.x >= targetMin.x && position.x <= targetMax.x &&
 					position.y >= targetMin.y && position.y <= targetMax.y) {
 					
@@ -56,8 +56,8 @@ int main() {
 	}
 	
 	printf("%d\n", possibilities);
-
-
+	
+	
 	
 	printf("\nOk\n");
 	
